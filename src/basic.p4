@@ -8,6 +8,12 @@ const bit<32> COUNTERS_PER_TABLE = 32w1024;
 const bit<32> HASH_MIN = 32w0;
 const bit<32> HASH_MAX = 32w1023;
 
+const bit<16> DNS_PORT_NUMBER = 53;
+
+// 0 - for Edge, 1 - Access/ TotR
+// Default set to 0
+register <bit<1>> (1) OP_MODE;
+
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
@@ -201,7 +207,7 @@ control MyEgress(inout headers hdr,
             HASH_MIN, 
             {
                 meta.flowId, 
-                104w12345678901234567890
+                104w0xFFFFFFFFFFFFFFFFFFFFFFFFFF
             },
             HASH_MAX
         );
@@ -229,6 +235,8 @@ control MyEgress(inout headers hdr,
     bit<104> mKeyTable;
     bit<32>  mCountTable;
     bit<1>   mValid;
+
+    bit<1>   mOpMode; 
 
     action s1Action () {
         meta.mKeyCarried = meta.flowId;
@@ -351,6 +359,12 @@ control MyEgress(inout headers hdr,
     }
 
     apply {
+        OP_MODE.read(mOpMode, 0);
+        if(mOpMode == 0) {
+            // Edge
+        } else {
+            // TotR
+        } 
         // preprocessing
         extract_flow_id();
         compute_index();
