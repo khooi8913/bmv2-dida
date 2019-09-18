@@ -64,10 +64,10 @@ header udp_t {
 }
 
 struct metadata {
-    bit<104>    flowId;
+    bit<80>    flowId;
     bit<32>     s1Index;
     bit<32>     s2Index;
-    bit<104>    mKeyCarried;
+    bit<80>    mKeyCarried;
     bit<32>     mCountCarried;
 }
 
@@ -176,27 +176,25 @@ control MyEgress(inout headers hdr,
     
     // Register definition
     // Table 1
-    register <bit<104>> (COUNTERS_PER_TABLE) s1FlowTracker;
+    register <bit<80>> (COUNTERS_PER_TABLE) s1FlowTracker;
     register <bit<32>> (COUNTERS_PER_TABLE) s1PacketCount;
     register <bit<1>> (COUNTERS_PER_TABLE) s1ValidBit;
     // Table 2
-    register <bit<104>> (COUNTERS_PER_TABLE) s2FlowTracker;
+    register <bit<80>> (COUNTERS_PER_TABLE) s2FlowTracker;
     register <bit<32>> (COUNTERS_PER_TABLE) s2PacketCount;
     register <bit<1>> (COUNTERS_PER_TABLE) s2ValidBit;
 
-    action extract_flow_id () {
-        meta.flowId[31:0] = hdr.ipv4.srcAddr;
-        meta.flowId[63:32] = hdr.ipv4.dstAddr;
-        meta.flowId[71:64] = hdr.ipv4.protocol;
-        
-        if(hdr.tcp.isValid()) {
-            meta.flowId[87:72] = hdr.tcp.srcPort;
-            meta.flowId[103:88] = hdr.tcp.dstPort;
-        }
-
-        if(hdr.udp.isValid()) {
-            meta.flowId[87:72] = hdr.udp.srcPort;
-            meta.flowId[103:88] = hdr.udp.dstPort;
+    action extract_flow_id (bit<1> mOpMode) {
+        if(mOpMode == 0) {
+            // Edge
+            meta.flowId[31:0] = hdr.ipv4.dstAddr;
+            meta.flowId[63:32] = hdr.ipv4.srcAddr;
+            meta.flowId[79:64] = hdr.udp.dstPort;
+        } else {
+            // TotR
+            meta.flowId[31:0] = hdr.ipv4.srcAddr;
+            meta.flowId[63:32] = hdr.ipv4.dstAddr;
+            meta.flowId[79:64] = hdr.udp.srcPort;
         }
     }
 
@@ -207,7 +205,7 @@ control MyEgress(inout headers hdr,
             HASH_MIN, 
             {
                 meta.flowId, 
-                104w0xFFFFFFFFFFFFFFFFFFFFFFFFFF
+                80w0xFFFFFFFFFFFFFFFFFFFF
             },
             HASH_MAX
         );
@@ -225,14 +223,14 @@ control MyEgress(inout headers hdr,
 
     // variable declarations, should they be here?
     // have to check again whether this is valid or not
-    bit<104>  mDiff;
+    bit<80>  mDiff;
     bit<32>   mIndex;
 
-    bit<104> mKeyToWrite;
+    bit<80> mKeyToWrite;
     bit<32>  mCountToWrite;
     bit<1>   mBitToWrite;
 
-    bit<104> mKeyTable;
+    bit<80> mKeyTable;
     bit<32>  mCountTable;
     bit<1>   mValid;
 
@@ -362,16 +360,19 @@ control MyEgress(inout headers hdr,
         OP_MODE.read(mOpMode, 0);
         if(mOpMode == 0) {
             // Edge
+            extract_flow_id(mOpMode);
         } else {
             // TotR
-        } 
-        // preprocessing
-        extract_flow_id();
-        compute_index();
+            extract_flow_id(mOpMode);
+        }
 
-        // HashPipe here
-        stage1.apply();
-        if (meta.mKeyCarried != 0 && meta.mCountCarried != 0)   stage2.apply();
+        if (meta.flowId != 0) {
+            compute_index();
+
+            // HashPipe here
+            stage1.apply();
+            if (meta.mKeyCarried != 0 && meta.mCountCarried != 0)   stage2.apply();
+        }
     }
 
 }
