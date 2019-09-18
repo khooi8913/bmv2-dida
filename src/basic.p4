@@ -3,6 +3,7 @@
 #include <v1model.p4>
 
 const bit<16> TYPE_IPV4 = 0x800;
+const bit<16> TYPE_CTRL = 0x1234;
 
 const bit<32> COUNTERS_PER_TABLE = 32w1024;
 const bit<32> HASH_MIN = 32w0;
@@ -10,8 +11,10 @@ const bit<32> HASH_MAX = 32w1023;
 
 const bit<16> DNS_PORT_NUMBER = 53;
 
-// 0 - for Edge, 1 - Access/ TotR
-// Default set to 0
+const bit<32> THRESHOLD = 32;
+
+// 0 for Edge, 1 for TotR
+// Have to manually configure
 register <bit<1>> (1) OP_MODE;
 
 /*************************************************************************
@@ -63,6 +66,12 @@ header udp_t {
     bit<16> checksum;
 }
 
+header ctrl_t {
+    bit<32> routerId;
+    bit<32> counterValue;
+    bit<16> etherType;
+}
+
 struct metadata {
     bit<80>    flowId;
     bit<32>     s1Index;
@@ -74,6 +83,7 @@ struct metadata {
 struct headers {
     ethernet_t  ethernet;
     ipv4_t      ipv4;
+    ctrl_t      ctrl;
     tcp_t       tcp;
     udp_t       udp; 
 }
@@ -94,6 +104,14 @@ parser MyParser(packet_in packet,
     state parse_ethernet {
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
+            TYPE_IPV4   : parse_ipv4;
+            TYPE_CTRL: parse_ctrl;
+        }
+    }
+
+    state parse_ctrl {
+        packet.extract(hdr.ctrl);
+        transition select(hdr.ctrl.etherType) {
             TYPE_IPV4   : parse_ipv4;
         }
     }
@@ -159,7 +177,10 @@ control MyIngress(inout headers hdr,
     }
     
     apply {
-        if(hdr.ipv4.isValid()){
+        if(hdr.ctrl.isValid()) {
+            // TODO
+        }
+        if(hdr.ipv4.isValid()) {
             ipv4_lpm.apply();
         }
     }
@@ -235,6 +256,10 @@ control MyEgress(inout headers hdr,
     bit<1>   mValid;
 
     bit<1>   mOpMode; 
+
+    action encap_control () {
+        // TODO
+    }
 
     action s1Action () {
         meta.mKeyCarried = meta.flowId;
