@@ -66,24 +66,24 @@ header udp_t {
     bit<16> checksum;
 }
 
-header ctrl_t {
-    bit<32> routerId;
-    bit<32> counterValue;
-    bit<16> etherType;
-}
+// header ctrl_t {
+//     bit<32> routerId;
+//     bit<32> counterValue;
+//     bit<16> etherType;
+// }
 
 struct metadata {
-    bit<80>    flowId;
+    bit<80>     flowId;
     bit<32>     s1Index;
     bit<32>     s2Index;
-    bit<80>    mKeyCarried;
+    bit<80>     mKeyCarried;
     bit<32>     mCountCarried;
 }
 
 struct headers {
     ethernet_t  ethernet;
     ipv4_t      ipv4;
-    ctrl_t      ctrl;
+    // ctrl_t      ctrl;
     tcp_t       tcp;
     udp_t       udp; 
 }
@@ -105,16 +105,16 @@ parser MyParser(packet_in packet,
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
             TYPE_IPV4   : parse_ipv4;
-            TYPE_CTRL: parse_ctrl;
+            // TYPE_CTRL   : parse_ctrl;
         }
     }
 
-    state parse_ctrl {
-        packet.extract(hdr.ctrl);
-        transition select(hdr.ctrl.etherType) {
-            TYPE_IPV4   : parse_ipv4;
-        }
-    }
+    // state parse_ctrl {
+    //     packet.extract(hdr.ctrl);
+    //     transition select(hdr.ctrl.etherType) {
+    //         TYPE_IPV4   : parse_ipv4;
+    //     }
+    // }
 
     state parse_ipv4 {
         packet.extract(hdr.ipv4);
@@ -177,9 +177,9 @@ control MyIngress(inout headers hdr,
     }
     
     apply {
-        if(hdr.ctrl.isValid()) {
-            // TODO
-        }
+        // if(hdr.ctrl.isValid()) {
+        //     hdr.ctrl.setInvalid();
+        // }
         if(hdr.ipv4.isValid()) {
             ipv4_lpm.apply();
         }
@@ -257,9 +257,12 @@ control MyEgress(inout headers hdr,
 
     bit<1>   mOpMode; 
 
-    action encap_control () {
-        // TODO
-    }
+    // action encap_control (bit<32> countValue) {
+    //     hdr.ctrl.setValid();
+    //     // TODO: RouterId
+    //     hdr.ctrl.routerId = 32w0xabcdefgh;
+    //     hdr.ctrl.counterValue = countValue;
+    // }
 
     action s1Action () {
         meta.mKeyCarried = meta.flowId;
@@ -291,6 +294,11 @@ control MyEgress(inout headers hdr,
         // update metadata carried to the next table stage
         meta.mKeyCarried = (mDiff == 0) ? 0 : mKeyTable;
         meta.mCountCarried = (mDiff == 0) ? 0 : mCountTable;
+
+        // check whether count has exceeded threshold
+        // if (mCountToWrite > THRESHOLD) {
+        //     encap_control(mCountToWrite);
+        // }
     }
 
     action s2Action () {
@@ -351,6 +359,11 @@ control MyEgress(inout headers hdr,
         s2FlowTracker.write(mIndex, mKeyToWrite);
         s2PacketCount.write(mIndex, mCountToWrite);
         s2ValidBit.write(mIndex, mBitToWrite);
+
+        // check whether count has exceeded threshold
+        // if (mCountToWrite > THRESHOLD) {
+        //     encap_control(mCountToWrite);
+        // }
     }
 
     table stage1 {
@@ -438,6 +451,7 @@ control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
         packet.emit(hdr.ipv4);
+        // packet.emit(hdr.ctrl);
         packet.emit(hdr.tcp);
         packet.emit(hdr.udp);
     }
