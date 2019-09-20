@@ -279,7 +279,9 @@ control MyIngress(inout headers hdr,
                 // Do nothing
             } else if(hdr.ctrl.isValid() && hdr.ctrl.flag == 1) {
                 // If there is a control packet...
-                
+
+                // quick hack!!
+                standard_metadata.egress_spec = 3;
             } else {
                 drop();
             }
@@ -478,15 +480,23 @@ control MyEgress(inout headers hdr,
         // check table by table
         bit<80> fDiff;
         fDiff = meta.flowId - s1FlowId;
-        if (fDiff == 0) {
-            if (hdr.ctrl.counterValue > s2PktCount) {
-                meta.hhDetected = 1;
-            }
+
+        // detected flow does not exist in table!
+        if((meta.flowId - s1FlowId) != 0 && (meta.flowId - s2FlowId) != 0) {
+            meta.hhDetected = 1;
         } else {
-            fDiff = meta.flowId - s2FlowId;
-            if (fDiff == 0) {
+            // check s1
+            if(fDiff == 0) {
                 if (hdr.ctrl.counterValue > s2PktCount) {
                     meta.hhDetected = 1;
+                }
+            } else {
+                // check s2
+                fDiff = meta.flowId - s2FlowId;
+                if (fDiff == 0) {
+                    if (hdr.ctrl.counterValue > s2PktCount) {
+                        meta.hhDetected = 1;
+                    }
                 }
             }
         }
@@ -554,6 +564,8 @@ control MyEgress(inout headers hdr,
         extract_flow_id();
         compute_index();
         bool normal = false;
+        OP_MODE.read(meta.mOpMode, 0);
+
         if(meta.mOpMode == 0) {
             // Edge
             normal = true;
@@ -569,10 +581,10 @@ control MyEgress(inout headers hdr,
                     // if malicious
                     // set flag to control
                     router_ip.apply();
-                    hdr.ctrl.flag = 1;
+                    hdr.ctrl.flag = 0;
                     ROUTER_ID.read(hdr.ctrl.routerId, 0);
                     // forward to where it came from
-                    standard_metadata.egress_spec = standard_metadata.ingress_port;
+                    standard_metadata.egress_port = standard_metadata.ingress_port;
                     hdr.ipv4.dstAddr = meta.routerIp;
                 } else {
                     // if normal traffic, discard control header
@@ -589,7 +601,7 @@ control MyEgress(inout headers hdr,
 
         if (normal) {
             // filter dns packets only
-            if((meta.mOpMode == 1 && hdr.udp.dstPort == DNS_PORT_NUMBER) || (meta.mOpMode == 0 && hdr.udp.srcPort == DNS_PORT_NUMBER)) {
+            if(!hdr.icmp.isValid() && ((meta.mOpMode == 1 && hdr.udp.dstPort == DNS_PORT_NUMBER) || (meta.mOpMode == 0 && hdr.udp.srcPort == DNS_PORT_NUMBER))) {
                 stage1.apply();
                 if (meta.mKeyCarried != 0 && meta.mCountCarried != 0)   stage2.apply();
             }
