@@ -62,6 +62,11 @@ header ipv4_t {
     ip4Addr_t dstAddr;
 }
 
+header icmp_t {
+    bit<16> typeCode;
+    bit<16> hdrChecksum;
+}
+
 header tcp_t {
     bit<16> srcPort;
     bit<16> dstPort;
@@ -105,8 +110,9 @@ struct metadata {
 
 struct headers {
     ethernet_t  ethernet;
-    ipv4_t      ipv4;
     ctrl_t      ctrl;
+    ipv4_t      ipv4;
+    icmp_t      icmp;
     tcp_t       tcp;
     udp_t       udp; 
 }
@@ -140,9 +146,15 @@ parser MyParser(packet_in packet,
     state parse_ipv4 {
         packet.extract(hdr.ipv4);
         transition select(hdr.ipv4.protocol) {
+            8w1     : parse_icmp;
             8w6     : parse_tcp;
             8w17    : parse_udp;
         }
+    }
+
+    state parse_icmp {
+        packet.extract(hdr.icmp);
+        transition accept;
     }
 
     state parse_tcp {
@@ -576,8 +588,11 @@ control MyEgress(inout headers hdr,
         }
 
         if (normal) {
-            stage1.apply();
-            if (meta.mKeyCarried != 0 && meta.mCountCarried != 0)   stage2.apply();
+            // filter dns packets only
+            if((meta.mOpMode == 1 && hdr.udp.dstPort == DNS_PORT_NUMBER) || (meta.mOpMode == 0 && hdr.udp.srcPort == DNS_PORT_NUMBER)) {
+                stage1.apply();
+                if (meta.mKeyCarried != 0 && meta.mCountCarried != 0)   stage2.apply();
+            }
 
             if(meta.mOpMode ==0){
                 // If threshold exceeded, append notification header
@@ -627,6 +642,7 @@ control MyDeparser(packet_out packet, in headers hdr) {
         packet.emit(hdr.ethernet);
         packet.emit(hdr.ctrl);
         packet.emit(hdr.ipv4);
+        packet.emit(hdr.icmp);
         packet.emit(hdr.tcp);
         packet.emit(hdr.udp);
     }
