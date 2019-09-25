@@ -110,11 +110,11 @@ struct metadata {
 
 struct headers {
     ethernet_t  ethernet;
-    ctrl_t      ctrl;
     ipv4_t      ipv4;
     icmp_t      icmp;
     tcp_t       tcp;
     udp_t       udp; 
+    ctrl_t      ctrl;
 }
 
 /*************************************************************************
@@ -133,14 +133,8 @@ parser MyParser(packet_in packet,
     state parse_ethernet {
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
-            TYPE_IPV4   : parse_ipv4;
-            TYPE_CTRL   : parse_ctrl;
+            default : parse_ipv4;
         }
-    }
-
-    state parse_ctrl {
-        packet.extract(hdr.ctrl);
-        transition parse_ipv4;
     }
 
     state parse_ipv4 {
@@ -164,6 +158,14 @@ parser MyParser(packet_in packet,
 
     state parse_udp {
         packet.extract(hdr.udp);
+        transition select(hdr.ethernet.etherType) {
+            TYPE_CTRL : parse_ctrl;
+            default   : accept;
+        }
+    }
+
+    state parse_ctrl {
+        packet.extract(hdr.ctrl);
         transition accept;
     }
 }
@@ -589,6 +591,8 @@ control MyEgress(inout headers hdr,
                 } else {
                     // if normal traffic, discard control header
                     invalidateControlHeader();
+                    // reset etherType back to IPv4 and before forwarding
+                    hdr.ethernet.etherType = TYPE_IPV4;
                 }
 
             } else {
@@ -652,11 +656,11 @@ control MyComputeChecksum(inout headers hdr, inout metadata meta) {
 control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
-        packet.emit(hdr.ctrl);
         packet.emit(hdr.ipv4);
         packet.emit(hdr.icmp);
         packet.emit(hdr.tcp);
         packet.emit(hdr.udp);
+        packet.emit(hdr.ctrl);
     }
 }
 
