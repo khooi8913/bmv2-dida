@@ -306,25 +306,25 @@ control MyIngress(inout headers hdr,
         default_action = NoAction();
     }
 
-    table debug {
-        key = {
-            meta.srcIp : exact;
-            meta.dstIp : exact;
-            meta.srcPort : exact;
-            meta.dstPort : exact;
-            meta.flowId : exact;
-        }
-        actions = {
-            NoAction;
-        }
-        default_action = NoAction;
-    }
+    // table debug {
+    //     key = {
+    //         meta.srcIp : exact;
+    //         meta.dstIp : exact;
+    //         meta.srcPort : exact;
+    //         meta.dstPort : exact;
+    //         meta.flowId : exact;
+    //     }
+    //     actions = {
+    //         NoAction;
+    //     }
+    //     default_action = NoAction;
+    // }
  
     apply {
-        meta.srcIp = hdr.ipv4.srcAddr;
-        meta.dstIp = hdr.ipv4.dstAddr;
-        meta.srcPort = hdr.udp.srcPort;
-        meta.dstPort = hdr.udp.dstPort;
+        // meta.srcIp = hdr.ipv4.srcAddr;
+        // meta.dstIp = hdr.ipv4.dstAddr;
+        // meta.srcPort = hdr.udp.srcPort;
+        // meta.dstPort = hdr.udp.dstPort;
 
         ipv4_lpm.apply();
         OP_MODE.read(meta.mOpMode, 0);
@@ -362,7 +362,7 @@ control MyIngress(inout headers hdr,
                 aIngress_get_flow_id();
                 aIngress_compute_index();
                 aIngress_count_check();
-                debug.apply();
+                // debug.apply();
                 if(meta.blDetected == 1) {
                     standard_metadata.egress_spec = standard_metadata.ingress_port;;
                 }
