@@ -34,6 +34,9 @@ register <bit<1>> (COUNTERS_PER_TABLE) s2ValidBit;
 // Blacklist table
 register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
 
+// Blacklist count
+register <bit<32>> (1) blackListCount;
+
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
@@ -347,6 +350,11 @@ control MyIngress(inout headers hdr,
                 bIngress_compute_hash_index();
                 // Add to black list
                 BlackList.write(meta.blIndex, meta.blFlowId);
+                // Increment black list counter
+                bit<32> tmpBlackListCount;
+                blackListCount.read(tmpBlackListCount, 0);
+                tmpBlackListCount = tmpBlackListCount + 1;
+                blackListCount.write(0, tmpBlackListCount);
                 // drop by the PRE
                 drop(); 
             } else {
