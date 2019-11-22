@@ -9,10 +9,8 @@ const bit<32> COUNTERS_PER_TABLE = 32w1024;
 const bit<32> HASH_MIN = 32w0;
 const bit<32> HASH_MAX = 32w1023;
 
-const bit<16> DNS_PORT_NUMBER = 53;
-
 const bit<32> THRESHOLD = 10;
-const bit<32> NUM_ROUTERS = 32;  
+const bit<32> NUM_ROUTERS = 32;
 
 // Have to manually configure
 // 0 for Edge, 1 for TotR
@@ -105,6 +103,7 @@ struct metadata {
     bit<32>     mCountCarried;
     bit<1>      mOpMode;
     bit<32>     blCounterCarried;
+    bit<1>      mSuspicious;
     bit<32>     blFlowId;
     bit<32>     blIndex;
     bit<32>     blDiff;
@@ -123,7 +122,7 @@ struct headers {
     ipv4_t      ipv4;
     icmp_t      icmp;
     tcp_t       tcp;
-    udp_t       udp; 
+    udp_t       udp;
     ctrl_t      ctrl;
 }
 
@@ -185,7 +184,7 @@ parser MyParser(packet_in packet,
 ************   C H E C K S U M    V E R I F I C A T I O N   *************
 *************************************************************************/
 
-control MyVerifyChecksum(inout headers hdr, inout metadata meta) {   
+control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
     apply {  }
 }
 
@@ -215,17 +214,17 @@ control MyIngress(inout headers hdr,
 
     action bIngress_compute_hash_index () {
         hash(
-            meta.blIndex, 
-            HashAlgorithm.crc32, 
-            HASH_MIN, 
+            meta.blIndex,
+            HashAlgorithm.crc32,
+            HASH_MIN,
             {
-                meta.blFlowId, 
+                meta.blFlowId,
                 80w0xFFFFFFFFFFFFFFFFFFFF
             },
             HASH_MAX
         );
     }
-    
+
     action bIngress_check_black_list () {
         bit<32> tmp;
         BlackList.read(tmp, meta.blIndex);
@@ -240,20 +239,20 @@ control MyIngress(inout headers hdr,
 
     action aIngress_compute_index () {
         hash(
-            meta.s1Index, 
-            HashAlgorithm.crc32, 
-            HASH_MIN, 
+            meta.s1Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
             {
-                meta.flowId, 
+                meta.flowId,
                 80w0xFFFFFFFFFFFFFFFFFFFF
             },
             HASH_MAX
         );
-        
+
         hash(
-            meta.s2Index, 
-            HashAlgorithm.crc32, 
-            HASH_MIN, 
+            meta.s2Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
             {
                 meta.flowId
             },
@@ -262,10 +261,10 @@ control MyIngress(inout headers hdr,
     }
 
     action aIngress_count_check () {
-        bit<80> s1FlowId; 
+        bit<80> s1FlowId;
         bit<32> s1PktCount;
-        
-        bit<80> s2FlowId; 
+
+        bit<80> s2FlowId;
         bit<32> s2PktCount;
 
         s1FlowTracker.read(s1FlowId, meta.s1Index);
@@ -282,20 +281,20 @@ control MyIngress(inout headers hdr,
             meta.blDetected = 1;
         } else {
             if(meta.flowId - s1FlowId == 0) {
-                if (hdr.ctrl.counterValue > s1PktCount) {
+                if (hdr.ctrl.counterValue - s1PktCount > THRESHOLD) {
                     meta.blDetected = 1;
                 }
             } else {
                 // check s2
                 if (meta.flowId - s2FlowId == 0) {
-                    if (hdr.ctrl.counterValue > s2PktCount) {
+                    if (hdr.ctrl.counterValue - s2PktCount > THRESHOLD) {
                         meta.blDetected = 1;
                     }
                 }
             }
         }
     }
-    
+
     table ipv4_lpm {
         key = {
             hdr.ipv4.dstAddr: lpm;
@@ -322,7 +321,7 @@ control MyIngress(inout headers hdr,
     //     }
     //     default_action = NoAction;
     // }
- 
+
     apply {
         // meta.srcIp = hdr.ipv4.srcAddr;
         // meta.dstIp = hdr.ipv4.dstAddr;
@@ -337,8 +336,8 @@ control MyIngress(inout headers hdr,
             if(hdr.ipv4.isValid() && !hdr.ctrl.isValid()) {
                 // Normal IPv4 Packets
                 bIngress_get_flow_id();
-                bIngress_compute_hash_index();  
-                // Border needs to check whether the traffic is allowed or not        
+                bIngress_compute_hash_index();
+                // Border needs to check whether the traffic is allowed or not
                 bIngress_check_black_list();
                 if(meta.blDiff == 0) {
                     // If source IP is in the black list
@@ -356,7 +355,7 @@ control MyIngress(inout headers hdr,
                 tmpBlackListCount = tmpBlackListCount + 1;
                 blackListCount.write(0, tmpBlackListCount);
                 // drop by the PRE
-                drop(); 
+                drop();
             } else {
                 drop();
             }
@@ -406,20 +405,20 @@ control MyEgress(inout headers hdr,
 
     action compute_index () {
         hash(
-            meta.s1Index, 
-            HashAlgorithm.crc32, 
-            HASH_MIN, 
+            meta.s1Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
             {
-                meta.flowId, 
+                meta.flowId,
                 80w0xFFFFFFFFFFFFFFFFFFFF
             },
             HASH_MAX
         );
-        
+
         hash(
-            meta.s2Index, 
-            HashAlgorithm.crc32, 
-            HASH_MIN, 
+            meta.s2Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
             {
                 meta.flowId
             },
@@ -440,14 +439,6 @@ control MyEgress(inout headers hdr,
     bit<32>  mCountTable;
     bit<1>   mValid;
 
-    action bEgress_encap_control (bit<32> countValue) {
-        hdr.ethernet.etherType = TYPE_CTRL;
-        hdr.ctrl.setValid();
-        ROUTER_ID.read(hdr.ctrl.routerId, 0);
-        hdr.ctrl.counterValue = countValue;
-        hdr.ctrl.flag = 1;  
-    }
-
     action hashpipe_stage_1 () {
         meta.mKeyCarried = meta.flowId;
         meta.mCountCarried = 1;
@@ -458,7 +449,7 @@ control MyEgress(inout headers hdr,
         s1FlowTracker.read(mKeyTable, mIndex);
         s1PacketCount.read(mCountTable, mIndex);
         s1ValidBit.read(mValid, mIndex);
-        
+
         // always insert at first stage
         mKeyToWrite = meta.mKeyCarried;
         mCountToWrite = meta.mCountCarried;
@@ -468,7 +459,7 @@ control MyEgress(inout headers hdr,
             // check whether they are different
             mDiff = mKeyTable - meta.mKeyCarried;
             mCountToWrite = (mDiff == 0) ? mCountTable + 1 : mCountToWrite;
-        } 
+        }
 
         // update hash tables
         s1FlowTracker.write(mIndex, mKeyToWrite);
@@ -486,6 +477,7 @@ control MyEgress(inout headers hdr,
         // insert to new slot - will never exceed threshold
         if (mCountToWrite > THRESHOLD) {
             meta.blCounterCarried = mCountToWrite;
+            meta.mSuspicious = 1;
         }
     }
 
@@ -499,7 +491,7 @@ control MyEgress(inout headers hdr,
         mKeyToWrite = 0;
         mCountToWrite = 0;
         mBitToWrite = 0;
-        
+
         // read the key, value at mIndex
         s2FlowTracker.read(mKeyTable, mIndex);
         s2PacketCount.read(mCountTable, mIndex);
@@ -530,7 +522,7 @@ control MyEgress(inout headers hdr,
                     mDiff = 0;
                 }
             }
-        }       
+        }
 
         // if no eviction, maintain current key, value, and metadata
         if (mDiff == 0) {
@@ -538,7 +530,7 @@ control MyEgress(inout headers hdr,
             mCountToWrite = mCountTable;
             mBitToWrite = mValid;
         } else {
-            // if eviction occurs, have to update metadata 
+            // if eviction occurs, have to update metadata
             meta.mKeyCarried = mKeyTable;
             meta.mCountCarried = mCountTable;
         }
@@ -550,12 +542,13 @@ control MyEgress(inout headers hdr,
 
         // check whether count has exceeded threshold
         // possible scenarios
-        // 1. evicted key 
+        // 1. evicted key
         //      a. insert into new slot --> will never exceed threshold
         //      b. increment a current key --> may exceed threshold
         //      c. evict current key and insert --> will never exceed threshold
         if (mCountToWrite > THRESHOLD) {
             meta.blCounterCarried = mCountToWrite;
+            meta.mSuspicious = 1;
         }
     }
 
@@ -565,12 +558,24 @@ control MyEgress(inout headers hdr,
         hashpipe_stage_2();
     }
 
+    action encapsulate_control_header () {
+        hdr.ethernet.etherType = TYPE_CTRL;
+        hdr.ctrl.setValid();
+        ROUTER_ID.read(hdr.ctrl.routerId, 0);
+        hdr.ctrl.counterValue = meta.blCounterCarried;
+        hdr.ctrl.flag = 1;
+    }
+
     action set_invalid_ctrl_hdr() {
         hdr.ctrl.setInvalid();
+        hdr.ethernet.etherType = TYPE_IPV4;
     }
 
     action router_id_to_router_ip (ip4Addr_t routerIp) {
         meta.routerIp = routerIp;
+        hdr.ctrl.flag = 0;
+        ROUTER_ID.read(hdr.ctrl.routerId, 0);
+        hdr.ipv4.dstAddr = meta.routerIp;
     }
 
     table border_router_ip {
@@ -588,44 +593,117 @@ control MyEgress(inout headers hdr,
         default_action = NoAction();
     }
 
+    table count_requests {
+        key = {
+            meta.mOpMode : exact;
+            hdr.udp.dstPort : exact;
+        }
+        actions = {
+            NoAction;
+            hashpipe;
+        }
+        // const entries = {
+        //     // (1, 53) : hashpipe();
+        // }
+        default_action = NoAction;
+    }
+
+    table count_responses {
+        key = {
+            meta.mOpMode : exact;
+            hdr.udp.srcPort : exact;
+        }
+        actions = {
+            NoAction;
+            hashpipe;
+        }
+        // const entries = {
+        //     // (0, 53) : hashpipe();
+        // }
+        default_action = NoAction;
+    }
+
+    table threshold {
+        key = {
+            meta.mOpMode : exact;
+            meta.mSuspicious : exact;
+        }
+        actions = {
+            encapsulate_control_header;
+            NoAction;
+        }
+        const entries = {
+            (0, 1) : encapsulate_control_header();
+        }
+        default_action = NoAction;
+    }
+
+
     apply {
         // Extract flowId for processing
         extract_flow_id();
         compute_index();
 
-        if(meta.mOpMode == 0) {
-            // Border
-            if (!hdr.icmp.isValid() && hdr.udp.srcPort == DNS_PORT_NUMBER) {
-                hashpipe();
-            }
-            // If threshold exceeded, append notification header
-            if(meta.blCounterCarried !=0) {
-                bEgress_encap_control(meta.blCounterCarried);
-            }
-        } else {
-            // Access
-            if(hdr.ctrl.isValid() && hdr.ctrl.flag == 1) {
-                // Incoming notification message
-                if(meta.blDetected == 1) {
-                    // If confirmed as unsolicited source
-                    // Prepare control packet to be sent back to Border to blocking
-                    border_router_ip.apply();
-                    hdr.ctrl.flag = 0;
-                    ROUTER_ID.read(hdr.ctrl.routerId, 0);
-                    hdr.ipv4.dstAddr = meta.routerIp;
-                } else {
-                    // if normal traffic, discard control header
-                    // reset etherType back to IPv4 and before forwarding
-                    set_invalid_ctrl_hdr();
-                    hdr.ethernet.etherType = TYPE_IPV4;
-                }
+        // access
+        count_requests.apply();
+        if (meta.mOpMode == 1) {
+            if(meta.blDetected == 1) {
+                // If confirmed as unsolicited source
+                // Prepare control packet to be sent back to Border to blocking
+                border_router_ip.apply();
+                hdr.ctrl.flag = 0;
+                ROUTER_ID.read(hdr.ctrl.routerId, 0);
+                hdr.ipv4.dstAddr = meta.routerIp;
             } else {
-                // normal = true;
-                if (!hdr.icmp.isValid() && hdr.udp.dstPort == DNS_PORT_NUMBER) {
-                    hashpipe();
-                }
+                // if normal traffic, discard control header
+                // reset etherType back to IPv4 and before forwarding
+                set_invalid_ctrl_hdr();
+                hdr.ethernet.etherType = TYPE_IPV4;
             }
         }
+
+        // border
+        count_responses.apply();
+        threshold.apply();
+
+        // if (meta.blDetected == 1) {
+        //     border_router_ip.apply();
+        // }
+
+        // interested_traffic.apply();
+        // if(meta.mOpMode == 0) {
+        //     // Border
+        //     if (!hdr.icmp.isValid() && hdr.udp.srcPort == DNS_PORT_NUMBER) {
+        //         hashpipe();
+        //     }
+        //     // If threshold exceeded, append notification header
+        //     if(meta.blCounterCarried !=0) {
+        //         encapsulate_control_header(meta.blCounterCarried);
+        //     }
+        // } else {
+        //     // Access
+        //     if(hdr.ctrl.isValid() && hdr.ctrl.flag == 1) {
+        //         // Incoming notification message
+        //         if(meta.blDetected == 1) {
+        //             // If confirmed as unsolicited source
+        //             // Prepare control packet to be sent back to Border to blocking
+        //             border_router_ip.apply();
+        //             hdr.ctrl.flag = 0;
+        //             ROUTER_ID.read(hdr.ctrl.routerId, 0);
+        //             hdr.ipv4.dstAddr = meta.routerIp;
+        //         } else {
+        //             // if normal traffic, discard control header
+        //             // reset etherType back to IPv4 and before forwarding
+        //             set_invalid_ctrl_hdr();
+        //             hdr.ethernet.etherType = TYPE_IPV4;
+        //         }
+        //     } else {
+        //         // normal = true;
+        //         if (!hdr.icmp.isValid() && hdr.udp.dstPort == DNS_PORT_NUMBER) {
+        //             hashpipe();
+        //         }
+        //     }
+        // }
     }
 }
 
@@ -637,7 +715,7 @@ control MyComputeChecksum(inout headers hdr, inout metadata meta) {
     apply {
         update_checksum(
             hdr.ipv4.isValid(),
-            { 
+            {
                 hdr.ipv4.version,
                 hdr.ipv4.ihl,
                 hdr.ipv4.diffserv,
@@ -648,7 +726,7 @@ control MyComputeChecksum(inout headers hdr, inout metadata meta) {
                 hdr.ipv4.ttl,
                 hdr.ipv4.protocol,
                 hdr.ipv4.srcAddr,
-                hdr.ipv4.dstAddr 
+                hdr.ipv4.dstAddr
             },
             hdr.ipv4.hdrChecksum,
             HashAlgorithm.csum16
