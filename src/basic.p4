@@ -37,8 +37,8 @@ register <bit<32>> (COUNTERS_PER_TABLE) row3;
 // Blacklist table
 // register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
 
-register <bit<16>> (COUNTERS_PER_TABLE) bl1;
-register <bit<16>> (COUNTERS_PER_TABLE) bl2;
+register <bit<16>> (32w12800) bl1;
+register <bit<16>> (32w12800) bl2;
 
 // Blacklist count
 register <bit<32>> (1) blackListCount;
@@ -254,7 +254,7 @@ control MyIngress(inout headers hdr,
                 meta.blFlowId,
                 80w0xBCDEFBCDEFBCDEFBCDEF
             },
-            HASH_MAX
+            32w12799
         );
         hash(
             meta.bl2Index,
@@ -264,7 +264,7 @@ control MyIngress(inout headers hdr,
                 meta.blFlowId,
                 80w0xABCDEABCDEABCDEABCDE
             },
-            HASH_MAX
+            32w12799
         );
         hash(
             meta.blHash,
@@ -482,12 +482,26 @@ control MyIngress(inout headers hdr,
                 bIngress_compute_hash_index();
                 // Add to black list
                 // BlackList.write(meta.blIndex, meta.blFlowId);
+                bit<16> tmp1;
+                bit<16> tmp2;
+                bit<1> isEmpty = 0;
+                bl1.read(tmp1, meta.bl1Index);
+                bl2.read(tmp2, meta.bl2Index);
+                if (tmp1 == 0 || tmp2 == 0){
+                    isEmpty = 1;
+                }
+
                 bl1.write(meta.bl1Index, (bit<16>) meta.blHash);
                 bl2.write(meta.bl2Index, (bit<16>) meta.blHash);
                 // Increment black list counter
+                
+                // TODO: Add condition here, only add new count when write to empty slot
+
                 bit<32> tmpBlackListCount;
                 blackListCount.read(tmpBlackListCount, 0);
-                tmpBlackListCount = tmpBlackListCount + 1;
+                if (isEmpty == 1) {
+                    tmpBlackListCount = tmpBlackListCount + 1;
+                }
                 blackListCount.write(0, tmpBlackListCount);
                 // drop by the PRE
                 drop();
