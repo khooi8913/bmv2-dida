@@ -21,13 +21,13 @@ register <bit<8>> (1)  ROUTER_ID;
 // Register definition
 // HashPipe
 // Table 1
-register <bit<80>> (COUNTERS_PER_TABLE) s1FlowTracker;
-register <bit<32>> (COUNTERS_PER_TABLE) s1PacketCount;
-register <bit<1>> (COUNTERS_PER_TABLE) s1ValidBit;
-// Table 2
-register <bit<80>> (COUNTERS_PER_TABLE) s2FlowTracker;
-register <bit<32>> (COUNTERS_PER_TABLE) s2PacketCount;
-register <bit<1>> (COUNTERS_PER_TABLE) s2ValidBit;
+// register <bit<80>> (COUNTERS_PER_TABLE) s1FlowTracker;
+// register <bit<32>> (COUNTERS_PER_TABLE) s1PacketCount;
+// register <bit<1>> (COUNTERS_PER_TABLE) s1ValidBit;
+// // Table 2
+// register <bit<80>> (COUNTERS_PER_TABLE) s2FlowTracker;
+// register <bit<32>> (COUNTERS_PER_TABLE) s2PacketCount;
+// register <bit<1>> (COUNTERS_PER_TABLE) s2ValidBit;
 
 // CMS
 register <bit<32>> (COUNTERS_PER_TABLE) row1;
@@ -121,6 +121,7 @@ struct metadata {
     bit<16>     srcPort;
     bit<16>     dstPort;
 
+    // CMS
     bit<32>     cmsIndexRow1;
     bit<32>     cmsIndexRow2;
     bit<32>     cmsIndexRow3;
@@ -254,26 +255,26 @@ control MyIngress(inout headers hdr,
 
     action aIngress_compute_index () {
         // HashPipe
-        hash(
-            meta.s1Index,
-            HashAlgorithm.crc32,
-            HASH_MIN,
-            {
-                meta.flowId,
-                80w0xFFFFFFFFFFFFFFFFFFFF
-            },
-            HASH_MAX
-        );
+        // hash(
+        //     meta.s1Index,
+        //     HashAlgorithm.crc32,
+        //     HASH_MIN,
+        //     {
+        //         meta.flowId,
+        //         80w0xFFFFFFFFFFFFFFFFFFFF
+        //     },
+        //     HASH_MAX
+        // );
 
-        hash(
-            meta.s2Index,
-            HashAlgorithm.crc32,
-            HASH_MIN,
-            {
-                meta.flowId
-            },
-            HASH_MAX
-        );
+        // hash(
+        //     meta.s2Index,
+        //     HashAlgorithm.crc32,
+        //     HASH_MIN,
+        //     {
+        //         meta.flowId
+        //     },
+        //     HASH_MAX
+        // );
 
         // CMS
         hash(
@@ -312,7 +313,7 @@ control MyIngress(inout headers hdr,
     }
 
     action get_min_val () {
-        bit <32> temp_min = 0;
+        bit<32> temp_min = 0xFFFFFFFF;
         bit <32> row1Val;
         bit <32> row2Val;
         bit <32> row3Val;
@@ -339,38 +340,38 @@ control MyIngress(inout headers hdr,
 
     action aIngress_count_check () {
         // HashPipe
-        bit<80> s1FlowId;
-        bit<32> s1PktCount;
+        // bit<80> s1FlowId;
+        // bit<32> s1PktCount;
 
-        bit<80> s2FlowId;
-        bit<32> s2PktCount;
+        // bit<80> s2FlowId;
+        // bit<32> s2PktCount;
 
-        s1FlowTracker.read(s1FlowId, meta.s1Index);
-        s1PacketCount.read(s1PktCount, meta.s1Index);
+        // s1FlowTracker.read(s1FlowId, meta.s1Index);
+        // s1PacketCount.read(s1PktCount, meta.s1Index);
 
-        s2FlowTracker.read(s2FlowId, meta.s2Index);
-        s2PacketCount.read(s2PktCount, meta.s2Index);
+        // s2FlowTracker.read(s2FlowId, meta.s2Index);
+        // s2PacketCount.read(s2PktCount, meta.s2Index);
 
-        meta.blDetected = 0;
+        // meta.blDetected = 0;
 
-        if((meta.flowId - s1FlowId) != 0 && (meta.flowId - s2FlowId) != 0) {
-            // detected flow does not exist in table!
-            // hence it is unsolicited
-            meta.blDetected = 1;
-        } else {
-            if(meta.flowId - s1FlowId == 0) {
-                if (hdr.ctrl.counterValue - s1PktCount > THRESHOLD) {
-                    meta.blDetected = 1;
-                }
-            } else {
-                // check s2
-                if (meta.flowId - s2FlowId == 0) {
-                    if (hdr.ctrl.counterValue - s2PktCount > THRESHOLD) {
-                        meta.blDetected = 1;
-                    }
-                }
-            }
-        }
+        // if((meta.flowId - s1FlowId) != 0 && (meta.flowId - s2FlowId) != 0) {
+        //     // detected flow does not exist in table!
+        //     // hence it is unsolicited
+        //     meta.blDetected = 1;
+        // } else {
+        //     if(meta.flowId - s1FlowId == 0) {
+        //         if (hdr.ctrl.counterValue - s1PktCount > THRESHOLD) {
+        //             meta.blDetected = 1;
+        //         }
+        //     } else {
+        //         // check s2
+        //         if (meta.flowId - s2FlowId == 0) {
+        //             if (hdr.ctrl.counterValue - s2PktCount > THRESHOLD) {
+        //                 meta.blDetected = 1;
+        //             }
+        //         }
+        //     }
+        // }
 
         // CMS
         get_min_val();
@@ -489,26 +490,26 @@ control MyEgress(inout headers hdr,
 
     action compute_index () {
         // HashPipe
-        hash(
-            meta.s1Index,
-            HashAlgorithm.crc32,
-            HASH_MIN,
-            {
-                meta.flowId,
-                80w0xFFFFFFFFFFFFFFFFFFFF
-            },
-            HASH_MAX
-        );
+        // hash(
+        //     meta.s1Index,
+        //     HashAlgorithm.crc32,
+        //     HASH_MIN,
+        //     {
+        //         meta.flowId,
+        //         80w0xFFFFFFFFFFFFFFFFFFFF
+        //     },
+        //     HASH_MAX
+        // );
 
-        hash(
-            meta.s2Index,
-            HashAlgorithm.crc32,
-            HASH_MIN,
-            {
-                meta.flowId
-            },
-            HASH_MAX
-        );
+        // hash(
+        //     meta.s2Index,
+        //     HashAlgorithm.crc32,
+        //     HASH_MIN,
+        //     {
+        //         meta.flowId
+        //     },
+        //     HASH_MAX
+        // );
 
         // CMS
         hash(
@@ -545,137 +546,138 @@ control MyEgress(inout headers hdr,
         );
     }
 
+    // HashPipe
     // variable declarations, should they be here?
     // have to check again whether this is valid or not
-    bit<80>  mDiff;
-    bit<32>  mIndex;
+    // bit<80>  mDiff;
+    // bit<32>  mIndex;
 
-    bit<80>  mKeyToWrite;
-    bit<32>  mCountToWrite;
-    bit<1>   mBitToWrite;
+    // bit<80>  mKeyToWrite;
+    // bit<32>  mCountToWrite;
+    // bit<1>   mBitToWrite;
 
-    bit<80>  mKeyTable;
-    bit<32>  mCountTable;
-    bit<1>   mValid;
+    // bit<80>  mKeyTable;
+    // bit<32>  mCountTable;
+    // bit<1>   mValid;
 
-    action hashpipe_stage_1 () {
-        meta.mKeyCarried = meta.flowId;
-        meta.mCountCarried = 1;
-        mIndex = meta.s1Index;
-        mDiff = 0;
+    // action hashpipe_stage_1 () {
+    //     meta.mKeyCarried = meta.flowId;
+    //     meta.mCountCarried = 1;
+    //     mIndex = meta.s1Index;
+    //     mDiff = 0;
 
-        // read the key value at that location
-        s1FlowTracker.read(mKeyTable, mIndex);
-        s1PacketCount.read(mCountTable, mIndex);
-        s1ValidBit.read(mValid, mIndex);
+    //     // read the key value at that location0xFFFFFFFF
+    //     s1FlowTracker.read(mKeyTable, mIndex);0xFFFFFFFF
+    //     s1PacketCount.read(mCountTable, mIndex0xFFFFFFFF
+    //     s1ValidBit.read(mValid, mIndex);
 
-        // always insert at first stage
-        mKeyToWrite = meta.mKeyCarried;
-        mCountToWrite = meta.mCountCarried;
-        mBitToWrite = 1;
+    //     // always insert at first stage
+    //     mKeyToWrite = meta.mKeyCarried;
+    //     mCountToWrite = meta.mCountCarried;
+    //     mBitToWrite = 1;
 
-        if(mValid == 1) {
-            // check whether they are different
-            mDiff = mKeyTable - meta.mKeyCarried;
-            mCountToWrite = (mDiff == 0) ? mCountTable + 1 : mCountToWrite;
-        }
+    //     if(mValid == 1) {
+    //         // check whether they are differen0xFFFFFFFF
+    //         mDiff = mKeyTable - meta.mKeyCarri0xFFFFFFFF
+    //         mCountToWrite = (mDiff == 0) ? mCo0xFFFFFFFF
+    //     }
 
-        // update hash tables
-        s1FlowTracker.write(mIndex, mKeyToWrite);
-        s1PacketCount.write(mIndex, mCountToWrite);
-        s1ValidBit.write(mIndex, mBitToWrite);
+    //     // update hash tables
+    //     s1FlowTracker.write(mIndex, mKeyToWrit0xFFFFFFFF
+    //     s1PacketCount.write(mIndex, mCountToWr0xFFFFFFFF
+    //     s1ValidBit.write(mIndex, mBitToWrite);0xFFFFFFFF
 
-        // update metadata carried to the next table stage
-        meta.mKeyCarried = (mDiff == 0) ? 0 : mKeyTable;
-        meta.mCountCarried = (mDiff == 0) ? 0 : mCountTable;
+    //     // update metadata carried to the next table stage
+    //     meta.mKeyCarried = (mDiff == 0) ? 0 : mKeyTable;
+    //     meta.mCountCarried = (mDiff == 0) ? 0 : mCountTable;
 
-        // check whether count has exceeded threshold
-        // scenarios to be considered
-        // insert new key, evict old key - never exceed threshold
-        // increment counter of current key - possible to exceed threshold
-        // insert to new slot - will never exceed threshold
-        if (mCountToWrite > THRESHOLD) {
-            meta.blCounterCarried = mCountToWrite;
-            meta.mSuspicious = 1;
-        }
-    }
+    //     // check whether count has exceeded threshold
+    //     // scenarios to be considered
+    //     // insert new key, evict old key - never exceed threshold
+    //     // increment counter of current key - possible to exceed threshold
+    //     // insert to new slot - will never exceed threshold
+    //     if (mCountToWrite > THRESHOLD) {
+    //         meta.blCounterCarried = mCountToWrite;
+    //         meta.mSuspicious = 1;
+    //     }
+    // }
 
-    action hashpipe_stage_2 () {
-        // mKeyCarried is set
-        // mCountCarried is set
-        mIndex = meta.s2Index;
-        mDiff = 0;
+    // action hashpipe_stage_2 () {
+    //     // mKeyCarried is set
+    //     // mCountCarried is set
+    //     mIndex = meta.s2Index;
+    //     mDiff = 0;
 
-        // init
-        mKeyToWrite = 0;
-        mCountToWrite = 0;
-        mBitToWrite = 0;
+    //     // init
+    //     mKeyToWrite = 0;
+    //     mCountToWrite = 0;
+    //     mBitToWrite = 0;
 
-        // read the key, value at mIndex
-        s2FlowTracker.read(mKeyTable, mIndex);
-        s2PacketCount.read(mCountTable, mIndex);
-        s2ValidBit.read(mValid, mIndex);
+    //     // read the key, value at mIndex
+    //     s2FlowTracker.read(mKeyTable, mIndex);
+    //     s2PacketCount.read(mCountTable, mIndex);
+    //     s2ValidBit.read(mValid, mIndex);
 
-        // if the slot is empty
-        if (mValid != 1) {
-            mDiff = 1;
-            mKeyToWrite = meta.mKeyCarried;
-            mCountToWrite = meta.mCountCarried;
-            mBitToWrite = 1;
-        } else {
-            mDiff = meta.mKeyCarried - mKeyTable;
-            // same key, increase count
-            if(mDiff == 0) {
-                mKeyToWrite = mKeyTable;
-                mCountToWrite = mCountTable + meta.mCountCarried;
-            } else {
-                // different key
-                // compare the count values
-                if (meta.mCountCarried > mCountTable) {
-                    // evict the key with smaller count value
-                    mKeyToWrite = meta.mKeyCarried;
-                    mCountToWrite = meta.mCountCarried;
-                    mBitToWrite = 1;
-                } else {
-                    // no eviction occurs
-                    mDiff = 0;
-                }
-            }
-        }
+    //     // if the slot is empty
+    //     if (mValid != 1) {
+    //         mDiff = 1;
+    //         mKeyToWrite = meta.mKeyCarried;
+    //         mCountToWrite = meta.mCountCarried;
+    //         mBitToWrite = 1;
+    //     } else {
+    //         mDiff = meta.mKeyCarried - mKeyTable;
+    //         // same key, increase count
+    //         if(mDiff == 0) {
+    //             mKeyToWrite = mKeyTable;
+    //             mCountToWrite = mCountTable + meta.mCountCarried;
+    //         } else {
+    //             // different key
+    //             // compare the count values
+    //             if (meta.mCountCarried > mCountTable) {
+    //                 // evict the key with smaller count value
+    //                 mKeyToWrite = meta.mKeyCarried;
+    //                 mCountToWrite = meta.mCountCarried;
+    //                 mBitToWrite = 1;
+    //             } else {
+    //                 // no eviction occurs
+    //                 mDiff = 0;
+    //             }
+    //         }
+    //     }
 
-        // if no eviction, maintain current key, value, and metadata
-        if (mDiff == 0) {
-            mKeyToWrite = mKeyTable;
-            mCountToWrite = mCountTable;
-            mBitToWrite = mValid;
-        } else {
-            // if eviction occurs, have to update metadata
-            meta.mKeyCarried = mKeyTable;
-            meta.mCountCarried = mCountTable;
-        }
+    //     // if no eviction, maintain current key, value, and metadata
+    //     if (mDiff == 0) {
+    //         mKeyToWrite = mKeyTable;
+    //         mCountToWrite = mCountTable;
+    //         mBitToWrite = mValid;
+    //     } else {
+    //         // if eviction occurs, have to update metadata
+    //         meta.mKeyCarried = mKeyTable;
+    //         meta.mCountCarried = mCountTable;
+    //     }
 
-        // update hash tables
-        s2FlowTracker.write(mIndex, mKeyToWrite);
-        s2PacketCount.write(mIndex, mCountToWrite);
-        s2ValidBit.write(mIndex, mBitToWrite);
+    //     // update hash tables
+    //     s2FlowTracker.write(mIndex, mKeyToWrite);
+    //     s2PacketCount.write(mIndex, mCountToWrite);
+    //     s2ValidBit.write(mIndex, mBitToWrite);
 
-        // check whether count has exceeded threshold
-        // possible scenarios
-        // 1. evicted key
-        //      a. insert into new slot --> will never exceed threshold
-        //      b. increment a current key --> may exceed threshold
-        //      c. evict current key and insert --> will never exceed threshold
-        if (mCountToWrite > THRESHOLD) {
-            meta.blCounterCarried = mCountToWrite;
-            meta.mSuspicious = 1;
-        }
-    }
+    //     // check whether count has exceeded threshold
+    //     // possible scenarios
+    //     // 1. evicted key
+    //     //      a. insert into new slot --> will never exceed threshold
+    //     //      b. increment a current key --> may exceed threshold
+    //     //      c. evict current key and insert --> will never exceed threshold
+    //     if (mCountToWrite > THRESHOLD) {
+    //         meta.blCounterCarried = mCountToWrite;
+    //         meta.mSuspicious = 1;
+    //     }
+    // }
 
-    // HashPipe implementation here (d=2)
-    action hashpipe() {
-        hashpipe_stage_1();
-        hashpipe_stage_2();
-    }
+    // // HashPipe implementation here (d=2)
+    // action hashpipe() {
+    //     hashpipe_stage_1();
+    //     hashpipe_stage_2();
+    // }
 
     action cms (){
         // assume already compute index
@@ -690,6 +692,24 @@ control MyEgress(inout headers hdr,
         row1Val = row1Val + 1;
         row2Val = row2Val + 1;
         row3Val = row3Val + 1;
+
+        bit<32> temp_min = 0xFFFFFFFF;
+        if (row1Val < temp_min) {
+            temp_min = row1Val;
+        }
+
+        if (row2Val < temp_min) {
+            temp_min = row2Val;
+        }
+
+        if (row3Val < temp_min) {
+            temp_min = row3Val;
+        }
+
+        if (temp_min > THRESHOLD) {
+            meta.blCounterCarried = temp_min;
+            meta.mSuspicious = 1;
+        }
 
         row1.write(meta.cmsIndexRow1, row1Val);
         row2.write(meta.cmsIndexRow2, row2Val);
@@ -739,11 +759,12 @@ control MyEgress(inout headers hdr,
         }
         actions = {
             NoAction;
-            hashpipe;
+            // hashpipe;
+            cms;
         }
-        // const entries = {
-        //     // (1, 53) : hashpipe();
-        // }
+        const entries = {
+            (1, 53) : cms();
+        }
         default_action = NoAction;
     }
 
@@ -754,11 +775,13 @@ control MyEgress(inout headers hdr,
         }
         actions = {
             NoAction;
-            hashpipe;
+            // hashpipe;
+            cms;
         }
-        // const entries = {
-        //     // (0, 53) : hashpipe();
-        // }
+        const entries = {
+            // (0, 53) : hashpipe();
+            (0, 53) : cms();
+        }
         default_action = NoAction;
     }
 
