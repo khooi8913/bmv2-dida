@@ -35,7 +35,10 @@ register <bit<32>> (COUNTERS_PER_TABLE) row2;
 register <bit<32>> (COUNTERS_PER_TABLE) row3;
 
 // Blacklist table
-register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
+// register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
+
+register <bit<16>> (COUNTERS_PER_TABLE) bl1;
+register <bit<16>> (COUNTERS_PER_TABLE) bl2;
 
 // Blacklist count
 register <bit<32>> (1) blackListCount;
@@ -131,6 +134,10 @@ struct metadata {
     bit<32>     cmsValueRow3;
 
     bit<32>     cmsMinVal;
+
+    bit<16>     blHash;
+    bit<32>     bl1Index;
+    bit<32>     bl2Index;
 }
 
 struct headers {
@@ -229,22 +236,63 @@ control MyIngress(inout headers hdr,
     }
 
     action bIngress_compute_hash_index () {
+        // hash(
+        //     meta.blIndex,
+        //     HashAlgorithm.crc32,
+        //     HASH_MIN,
+        //     {
+        //         meta.blFlowId,
+        //         80w0xFFFFFFFFFFFFFFFFFFFF
+        //     },
+        //     HASH_MAX
+        // );
         hash(
-            meta.blIndex,
+            meta.bl1Index,
             HashAlgorithm.crc32,
             HASH_MIN,
             {
                 meta.blFlowId,
-                80w0xFFFFFFFFFFFFFFFFFFFF
+                80w0xBCDEFBCDEFBCDEFBCDEF
             },
             HASH_MAX
+        );
+        hash(
+            meta.bl2Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.blFlowId,
+                80w0xABCDEABCDEABCDEABCDE
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.blHash,
+            HashAlgorithm.crc32,
+            16w0,
+            {
+                meta.blFlowId,
+                80w0x12345678901234567890
+            },
+            16w65535
         );
     }
 
     action bIngress_check_black_list () {
-        bit<32> tmp;
-        BlackList.read(tmp, meta.blIndex);
-        meta.blDiff = tmp - meta.blFlowId;
+        // bit<32> tmp;
+        // BlackList.read(tmp, meta.blIndex);
+        // meta.blDiff = tmp - meta.blFlowId;
+        bit<16> tmp1;
+        bit<16> tmp2;
+
+        bl1.read(tmp1, meta.bl1Index);
+        bl2.read(tmp2, meta.bl2Index);
+
+        if (tmp1 - meta.blHash == 0 ||  tmp2 - meta.blHash == 0) {
+            meta.blDiff = 0;
+        } else {
+            meta.blDiff = 1;
+        }
     }
 
     action aIngress_get_flow_id () {
@@ -433,7 +481,9 @@ control MyIngress(inout headers hdr,
                 bIngress_get_flow_id();
                 bIngress_compute_hash_index();
                 // Add to black list
-                BlackList.write(meta.blIndex, meta.blFlowId);
+                // BlackList.write(meta.blIndex, meta.blFlowId);
+                bl1.write(meta.bl1Index, (bit<16>) meta.blHash);
+                bl2.write(meta.bl2Index, (bit<16>) meta.blHash);
                 // Increment black list counter
                 bit<32> tmpBlackListCount;
                 blackListCount.read(tmpBlackListCount, 0);
