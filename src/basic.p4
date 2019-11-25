@@ -29,6 +29,11 @@ register <bit<80>> (COUNTERS_PER_TABLE) s2FlowTracker;
 register <bit<32>> (COUNTERS_PER_TABLE) s2PacketCount;
 register <bit<1>> (COUNTERS_PER_TABLE) s2ValidBit;
 
+// CMS
+register <bit<32>> (COUNTERS_PER_TABLE) row1;
+register <bit<32>> (COUNTERS_PER_TABLE) row2;
+register <bit<32>> (COUNTERS_PER_TABLE) row3;
+
 // Blacklist table
 register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
 
@@ -115,6 +120,16 @@ struct metadata {
     ip4Addr_t   dstIp;
     bit<16>     srcPort;
     bit<16>     dstPort;
+
+    bit<32>     cmsIndexRow1;
+    bit<32>     cmsIndexRow2;
+    bit<32>     cmsIndexRow3;
+
+    bit<32>     cmsValueRow1;
+    bit<32>     cmsValueRow2;
+    bit<32>     cmsValueRow3;
+
+    bit<32>     cmsMinVal;
 }
 
 struct headers {
@@ -238,6 +253,7 @@ control MyIngress(inout headers hdr,
     }
 
     action aIngress_compute_index () {
+        // HashPipe
         hash(
             meta.s1Index,
             HashAlgorithm.crc32,
@@ -258,9 +274,71 @@ control MyIngress(inout headers hdr,
             },
             HASH_MAX
         );
+
+        // CMS
+        hash(
+            meta.cmsIndexRow1,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xFFFFFFFFFFFFFFFFFFFF
+            },
+            HASH_MAX
+        );
+
+        hash(
+            meta.cmsIndexRow2,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xCCCCCCCCCCCCCCCCCCCC
+            },
+            HASH_MAX
+        );
+
+        hash(
+            meta.cmsIndexRow3,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xAAAAAAAAAAAAAAAAAAAA
+            },
+            HASH_MAX
+        );
+
+    }
+
+    action get_min_val () {
+        bit <32> temp_min = 0;
+        bit <32> row1Val;
+        bit <32> row2Val;
+        bit <32> row3Val;
+        // read each register into metadata
+        // then do three if else statements
+        row1.read(row1Val, meta.cmsIndexRow1);
+        row2.read(row2Val, meta.cmsIndexRow2);
+        row3.read(row3Val, meta.cmsIndexRow3);
+
+        if (row1Val < temp_min) {
+            temp_min = row1Val;
+        }
+
+        if (row2Val < temp_min) {
+            temp_min = row2Val;
+        }
+
+        if (row3Val < temp_min) {
+            temp_min = row3Val;
+        }
+
+        meta.cmsMinVal = temp_min;
     }
 
     action aIngress_count_check () {
+        // HashPipe
         bit<80> s1FlowId;
         bit<32> s1PktCount;
 
@@ -292,6 +370,12 @@ control MyIngress(inout headers hdr,
                     }
                 }
             }
+        }
+
+        // CMS
+        get_min_val();
+        if(hdr.ctrl.counterValue - meta.cmsMinVal > THRESHOLD) {
+            meta.blDetected = 1;
         }
     }
 
@@ -404,6 +488,7 @@ control MyEgress(inout headers hdr,
     }
 
     action compute_index () {
+        // HashPipe
         hash(
             meta.s1Index,
             HashAlgorithm.crc32,
@@ -421,6 +506,40 @@ control MyEgress(inout headers hdr,
             HASH_MIN,
             {
                 meta.flowId
+            },
+            HASH_MAX
+        );
+
+        // CMS
+        hash(
+            meta.cmsIndexRow1,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xFFFFFFFFFFFFFFFFFFFF
+            },
+            HASH_MAX
+        );
+
+        hash(
+            meta.cmsIndexRow2,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xCCCCCCCCCCCCCCCCCCCC
+            },
+            HASH_MAX
+        );
+
+        hash(
+            meta.cmsIndexRow3,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xAAAAAAAAAAAAAAAAAAAA
             },
             HASH_MAX
         );
@@ -556,6 +675,26 @@ control MyEgress(inout headers hdr,
     action hashpipe() {
         hashpipe_stage_1();
         hashpipe_stage_2();
+    }
+
+    action cms (){
+        // assume already compute index
+        bit<32> row1Val;
+        bit<32> row2Val;
+        bit<32> row3Val;
+
+        row1.read(row1Val, meta.cmsIndexRow1);
+        row2.read(row2Val, meta.cmsIndexRow2);
+        row3.read(row3Val, meta.cmsIndexRow3);
+
+        row1Val = row1Val + 1;
+        row2Val = row2Val + 1;
+        row3Val = row3Val + 1;
+
+        row1.write(meta.cmsIndexRow1, row1Val);
+        row2.write(meta.cmsIndexRow2, row2Val);
+        row3.write(meta.cmsIndexRow3, row3Val);
+        // increment everyone by one
     }
 
     action encapsulate_control_header () {
