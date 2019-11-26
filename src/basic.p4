@@ -5,9 +5,20 @@
 const bit<16> TYPE_IPV4 = 0x800;
 const bit<16> TYPE_CTRL = 0x1234;
 
-const bit<32> COUNTERS_PER_TABLE = 32w1024;
+// HashPipe
+// const bit<32> COUNTERS_PER_TABLE = 32w1024;
+// const bit<32> HASH_MIN = 32w0;
+// const bit<32> HASH_MAX = 32w1023;
+
+// CMS - 25200 Counters = ~98KB
+const bit<32> COUNTERS_PER_TABLE = 32w4200;
 const bit<32> HASH_MIN = 32w0;
-const bit<32> HASH_MAX = 32w1023;
+const bit<32> HASH_MAX = 32w4200;
+
+// Black List -  12800 * 2 = 50KB
+const bit<32> BL_LENGTH = 32w3200;
+const bit<32> BL_HASH_MIN = 32w0;
+const bit<32> BL_HASH_MAX = 32w3200;
 
 const bit<32> THRESHOLD = 10;
 const bit<32> NUM_ROUTERS = 32;
@@ -33,12 +44,16 @@ register <bit<8>> (1)  ROUTER_ID;
 register <bit<32>> (COUNTERS_PER_TABLE) row1;
 register <bit<32>> (COUNTERS_PER_TABLE) row2;
 register <bit<32>> (COUNTERS_PER_TABLE) row3;
+register <bit<32>> (COUNTERS_PER_TABLE) row4;
+register <bit<32>> (COUNTERS_PER_TABLE) row5;
+register <bit<32>> (COUNTERS_PER_TABLE) row6;
 
 // Blacklist table
 // register <bit<32>> (COUNTERS_PER_TABLE) BlackList;
-
-register <bit<16>> (32w12800) bl1;
-register <bit<16>> (32w12800) bl2;
+register <bit<16>> (BL_LENGTH) bl1;
+register <bit<16>> (BL_LENGTH) bl2;
+register <bit<16>> (BL_LENGTH) bl3;
+register <bit<16>> (BL_LENGTH) bl4;
 
 // Blacklist count
 register <bit<32>> (1) blackListCount;
@@ -128,16 +143,24 @@ struct metadata {
     bit<32>     cmsIndexRow1;
     bit<32>     cmsIndexRow2;
     bit<32>     cmsIndexRow3;
+    bit<32>     cmsIndexRow4;
+    bit<32>     cmsIndexRow5;
+    bit<32>     cmsIndexRow6;
 
     bit<32>     cmsValueRow1;
     bit<32>     cmsValueRow2;
     bit<32>     cmsValueRow3;
+    bit<32>     cmsValueRow4;
+    bit<32>     cmsValueRow5;
+    bit<32>     cmsValueRow6;
 
     bit<32>     cmsMinVal;
 
     bit<16>     blHash;
     bit<32>     bl1Index;
     bit<32>     bl2Index;
+    bit<32>     bl3Index;
+    bit<32>     bl4Index;
 }
 
 struct headers {
@@ -249,12 +272,12 @@ control MyIngress(inout headers hdr,
         hash(
             meta.bl1Index,
             HashAlgorithm.crc32,
-            HASH_MIN,
+            BL_HASH_MIN,
             {
                 meta.blFlowId,
                 80w0xBCDEFBCDEFBCDEFBCDEF
             },
-            32w12799
+            BL_HASH_MAX
         );
         hash(
             meta.bl2Index,
@@ -264,7 +287,27 @@ control MyIngress(inout headers hdr,
                 meta.blFlowId,
                 80w0xABCDEABCDEABCDEABCDE
             },
-            32w12799
+            BL_HASH_MAX
+        );
+        hash(
+            meta.bl3Index,
+            HashAlgorithm.crc32,
+            BL_HASH_MIN,
+            {
+                meta.blFlowId,
+                80w0xCDEFACDEFACDEFACDEFA
+            },
+            BL_HASH_MAX
+        );
+        hash(
+            meta.bl4Index,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.blFlowId,
+                80w0xDEFABDEFABDEFABDEFAB
+            },
+            BL_HASH_MAX
         );
         hash(
             meta.blHash,
@@ -284,11 +327,15 @@ control MyIngress(inout headers hdr,
         // meta.blDiff = tmp - meta.blFlowId;
         bit<16> tmp1;
         bit<16> tmp2;
+        bit<16> tmp3;
+        bit<16> tmp4;
 
         bl1.read(tmp1, meta.bl1Index);
         bl2.read(tmp2, meta.bl2Index);
+        bl3.read(tmp3, meta.bl3Index);
+        bl4.read(tmp4, meta.bl4Index);
 
-        if (tmp1 - meta.blHash == 0 ||  tmp2 - meta.blHash == 0) {
+        if (tmp1 - meta.blHash == 0 ||  tmp2 - meta.blHash == 0 || tmp3 - meta.blHash == 0 ||  tmp4 - meta.blHash == 0) {
             meta.blDiff = 0;
         } else {
             meta.blDiff = 1;
@@ -357,6 +404,36 @@ control MyIngress(inout headers hdr,
             },
             HASH_MAX
         );
+        hash(
+            meta.cmsIndexRow4,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xBBBBBBBBBBBBBBBBBBBB
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.cmsIndexRow5,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xEEEEEEEEEEEEEEEEEEEE
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.cmsIndexRow6,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xDDDDDDDDDDDDDDDDDDDD
+            },
+            HASH_MAX
+        );
 
     }
 
@@ -365,11 +442,17 @@ control MyIngress(inout headers hdr,
         bit <32> row1Val;
         bit <32> row2Val;
         bit <32> row3Val;
+        bit <32> row4Val;
+        bit <32> row5Val;
+        bit <32> row6Val;
         // read each register into metadata
         // then do three if else statements
         row1.read(row1Val, meta.cmsIndexRow1);
         row2.read(row2Val, meta.cmsIndexRow2);
         row3.read(row3Val, meta.cmsIndexRow3);
+        row3.read(row4Val, meta.cmsIndexRow4);
+        row3.read(row5Val, meta.cmsIndexRow5);
+        row3.read(row6Val, meta.cmsIndexRow6);
 
         if (row1Val < temp_min) {
             temp_min = row1Val;
@@ -381,6 +464,18 @@ control MyIngress(inout headers hdr,
 
         if (row3Val < temp_min) {
             temp_min = row3Val;
+        }
+        
+        if (row4Val < temp_min) {
+            temp_min = row4Val;
+        }
+
+        if (row5Val < temp_min) {
+            temp_min = row5Val;
+        }
+
+        if (row6Val < temp_min) {
+            temp_min = row6Val;
         }
 
         meta.cmsMinVal = temp_min;
@@ -484,22 +579,60 @@ control MyIngress(inout headers hdr,
                 // BlackList.write(meta.blIndex, meta.blFlowId);
                 bit<16> tmp1;
                 bit<16> tmp2;
-                bit<1> isEmpty = 0;
+                bit<16> tmp3;
+                bit<16> tmp4;
+                
+                bit<1> addedToBlackList = 0; // table 1 
+
+
                 bl1.read(tmp1, meta.bl1Index);
                 bl2.read(tmp2, meta.bl2Index);
-                if (tmp1 == 0 || tmp2 == 0){
-                    isEmpty = 1;
-                }
-
-                bl1.write(meta.bl1Index, (bit<16>) meta.blHash);
-                bl2.write(meta.bl2Index, (bit<16>) meta.blHash);
-                // Increment black list counter
+                bl3.read(tmp3, meta.bl3Index);
+                bl4.read(tmp4, meta.bl4Index);
                 
-                // TODO: Add condition here, only add new count when write to empty slot
+                bit<16> toWrite;
+                // toWrite = (bit<16>) meta.blHash;
+
+                toWrite = 0;
+                if (tmp1 == 0 && addedToBlackList == 0) {
+                    addedToBlackList = 1;
+                    toWrite = (bit<16>) meta.blHash;
+                } else {
+                    toWrite = tmp1;
+                }
+                bl1.write(meta.bl1Index, (bit<16>) toWrite);
+
+                toWrite = 0;
+                if(tmp2 == 0 && addedToBlackList == 0) {
+                    addedToBlackList = 1;
+                    toWrite = (bit<16>) meta.blHash;
+                } else {
+                    toWrite = tmp2;
+                }
+                bl2.write(meta.bl2Index, (bit<16>) toWrite);
+
+                toWrite = 0;
+                if (tmp3 == 0 && addedToBlackList == 0) {
+                    addedToBlackList = 1;
+                    toWrite = (bit<16>) meta.blHash;
+                } else {
+                    toWrite = tmp3;
+                }
+                bl3.write(meta.bl3Index, (bit<16>) toWrite);
+
+                toWrite = 0;
+                if(tmp4 == 0 && addedToBlackList == 0) {
+                    addedToBlackList = 1;
+                    toWrite = (bit<16>) meta.blHash;
+                } else {
+                    toWrite = tmp4;
+                }
+                bl4.write(meta.bl4Index, (bit<16>) toWrite);
+                // Increment black list counter
 
                 bit<32> tmpBlackListCount;
                 blackListCount.read(tmpBlackListCount, 0);
-                if (isEmpty == 1) {
+                if (addedToBlackList == 1) {
                     tmpBlackListCount = tmpBlackListCount + 1;
                 }
                 blackListCount.write(0, tmpBlackListCount);
@@ -586,7 +719,6 @@ control MyEgress(inout headers hdr,
             },
             HASH_MAX
         );
-
         hash(
             meta.cmsIndexRow2,
             HashAlgorithm.crc32,
@@ -597,7 +729,6 @@ control MyEgress(inout headers hdr,
             },
             HASH_MAX
         );
-
         hash(
             meta.cmsIndexRow3,
             HashAlgorithm.crc32,
@@ -605,6 +736,36 @@ control MyEgress(inout headers hdr,
             {
                 meta.flowId,
                 80w0xAAAAAAAAAAAAAAAAAAAA
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.cmsIndexRow4,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xBBBBBBBBBBBBBBBBBBBB
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.cmsIndexRow5,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xEEEEEEEEEEEEEEEEEEEE
+            },
+            HASH_MAX
+        );
+        hash(
+            meta.cmsIndexRow6,
+            HashAlgorithm.crc32,
+            HASH_MIN,
+            {
+                meta.flowId,
+                80w0xDDDDDDDDDDDDDDDDDDDD
             },
             HASH_MAX
         );
@@ -748,26 +909,42 @@ control MyEgress(inout headers hdr,
         bit<32> row1Val;
         bit<32> row2Val;
         bit<32> row3Val;
+        bit<32> row4Val;
+        bit<32> row5Val;
+        bit<32> row6Val;
 
         row1.read(row1Val, meta.cmsIndexRow1);
         row2.read(row2Val, meta.cmsIndexRow2);
         row3.read(row3Val, meta.cmsIndexRow3);
+        row4.read(row4Val, meta.cmsIndexRow4);
+        row5.read(row5Val, meta.cmsIndexRow5);
+        row6.read(row6Val, meta.cmsIndexRow6);
 
         row1Val = row1Val + 1;
         row2Val = row2Val + 1;
         row3Val = row3Val + 1;
+        row4Val = row4Val + 1;
+        row5Val = row5Val + 1;
+        row6Val = row6Val + 1;
 
         bit<32> temp_min = 0xFFFFFFFF;
         if (row1Val < temp_min) {
             temp_min = row1Val;
         }
-
         if (row2Val < temp_min) {
             temp_min = row2Val;
         }
-
         if (row3Val < temp_min) {
             temp_min = row3Val;
+        }
+        if (row4Val < temp_min) {
+            temp_min = row4Val;
+        }
+        if (row5Val < temp_min) {
+            temp_min = row5Val;
+        }
+        if (row6Val < temp_min) {
+            temp_min = row6Val;
         }
 
         if (temp_min > THRESHOLD) {
@@ -778,6 +955,9 @@ control MyEgress(inout headers hdr,
         row1.write(meta.cmsIndexRow1, row1Val);
         row2.write(meta.cmsIndexRow2, row2Val);
         row3.write(meta.cmsIndexRow3, row3Val);
+        row4.write(meta.cmsIndexRow4, row4Val);
+        row5.write(meta.cmsIndexRow5, row5Val);
+        row6.write(meta.cmsIndexRow6, row6Val);
         // increment everyone by one
     }
 
