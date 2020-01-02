@@ -28,14 +28,12 @@
 #define BL_READ(num, ip, seed) hash(meta.index_bl##num, HashAlgorithm.crc32, (bit<32>)0, {ip, seed}, (bit<32>)BL_STAGE_SIZE);\
 bl##num.read(meta.value_bl##num, meta.index_bl##num)
 
-// Defined by control plane
+/* CONTROL PLANE VARIABLES */
 register <bit<32>>(1)   SUSPICIOUS_THRESHOLD;
 register <bit<32>>(1)   ATTACK_THRESHOLD;
 register <bit<1>> (1)   OP_MODE;    // 0 for DeviceType.BORDER, 1 for DeviceType.ACCESS
 register <bit<8>> (1)   ROUTER_ID; 
-
-// Blacklist count
-register <bit<32>> (1) blCount;
+register <bit<32>>(1)   blCount;
 
 /* Initialize CMS */
 SKETCH_INIT(0);
@@ -51,7 +49,6 @@ BL_INIT(1);
 BL_INIT(2);
 BL_INIT(3);
 
-
 /*************************************************************************
 ************   C H E C K S U M    V E R I F I C A T I O N   *************
 *************************************************************************/
@@ -59,7 +56,6 @@ BL_INIT(3);
 control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
     apply {  }
 }
-
 
 /*************************************************************************
 **************  I N G R E S S   P R O C E S S I N G   *******************
@@ -73,59 +69,6 @@ control MyIngress(inout headers hdr,
         mark_to_drop(standard_metadata);
     }
 
-    // action add_black_list_entry () {
-        // bit<32> ipToWrite;
-
-        // BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
-        // BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
-        // BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
-        // BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
-
-        // if(meta.value_bl0 == 0) {
-        //     ipToWrite = hdr.ipv4.srcAddr;
-        //     meta.addedToBl = 1;
-        // } else {
-        //     ipToWrite = meta.value_bl0;
-        // }
-        // bl0.write(meta.value_bl0, ipToWrite);
-        // if(meta.addedToBl == 1){
-        //     return;
-        // }
-
-        // if(meta.value_bl1 == 0) {
-        //     ipToWrite = hdr.ipv4.srcAddr;
-        //     meta.addedToBl = 1;
-        // } else {
-        //     ipToWrite = meta.value_bl1;
-        // }
-        // bl1.write(meta.value_bl1, ipToWrite);
-        // if(meta.addedToBl == 1){
-        //     return;
-        // }
-
-        // if(meta.value_bl2 == 0) {
-        //     ipToWrite = hdr.ipv4.srcAddr;
-        //     meta.addedToBl = 1;
-        // } else {
-        //     ipToWrite = meta.value_bl2;
-        // }
-        // bl2.write(meta.value_bl2, ipToWrite);
-        // if(meta.addedToBl == 1){
-        //     return;
-        // }
-
-        // if(meta.value_bl3 == 0) {
-        //     ipToWrite = hdr.ipv4.srcAddr;
-        //     meta.addedToBl = 1;
-        // } else {
-        //     ipToWrite = meta.value_bl3;
-        // }
-        // bl3.write(meta.value_bl3, ipToWrite);
-        // if(meta.addedToBl == 1){
-        //     return;
-        // }
-    // }
-
     action increment_black_list_count() {
         bit<32> tmpBlackListCount;
         blCount.read(tmpBlackListCount, 0);
@@ -135,7 +78,9 @@ control MyIngress(inout headers hdr,
         blCount.write(0, tmpBlackListCount);
     }
 
-    action verify_traffic_source () {   
+    action verify_traffic_source () {
+        meta.blDiff = 1; // Init
+
         BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
         BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
         BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
@@ -236,37 +181,42 @@ control MyIngress(inout headers hdr,
                 BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
                 BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
 
+                ipToWrite = 0;
                 if(meta.value_bl0 == 0 && meta.addedToBl == 0) {
                     ipToWrite = hdr.ipv4.srcAddr;
                     meta.addedToBl = 1;
                 } else {
                     ipToWrite = meta.value_bl0;
                 }
-                bl0.write(meta.value_bl0, ipToWrite);
+                bl0.write(meta.index_bl0, ipToWrite);
 
+                ipToWrite = 0;
                 if(meta.value_bl1 == 0 && meta.addedToBl == 0) {
                     ipToWrite = hdr.ipv4.srcAddr;
                     meta.addedToBl = 1;
                 } else {
                     ipToWrite = meta.value_bl1;
                 }
-                bl1.write(meta.value_bl1, ipToWrite);
+                bl1.write(meta.index_bl1, ipToWrite);
 
+                ipToWrite = 0;
                 if(meta.value_bl2 == 0 && meta.addedToBl == 0) {
                     ipToWrite = hdr.ipv4.srcAddr;
                     meta.addedToBl = 1;
                 } else {
                     ipToWrite = meta.value_bl2;
                 }
-                bl2.write(meta.value_bl2, ipToWrite);
+                bl2.write(meta.index_bl2, ipToWrite);
 
+                ipToWrite = 0;
                 if(meta.value_bl3 == 0 && meta.addedToBl == 0) {
                     ipToWrite = hdr.ipv4.srcAddr;
                     meta.addedToBl = 1;
                 } else {
                     ipToWrite = meta.value_bl3;
                 }
-                bl3.write(meta.value_bl3, ipToWrite);
+                bl3.write(meta.index_bl3, ipToWrite);
+
                 // Increment black list count                
                 increment_black_list_count();
                 // drop by the PRE
@@ -317,14 +267,6 @@ control MyEgress(inout headers hdr,
         SKETCH_COUNT(4, hdr.ipv4.dstAddr, hdr.ipv4.srcAddr, 64w0xEEEEEEEEEEEEEEEE);
         SKETCH_COUNT(5, hdr.ipv4.dstAddr, hdr.ipv4.srcAddr, 64w0xFFFFFFFFFFFFFFFF);
     }
-
-    // action sketch_count (){
-    //     if(meta.mOpMode == DeviceType.ACCESS) {
-    //         sketch_count_access();
-    //     } else {  // DeviceType.BORDER
-    //         sketch_count_border();
-    //     }
-    // }
 
     action mark_suspicious_traffic () {
         ROUTER_ID.read(meta.routerId, 0);
