@@ -1,0 +1,3383 @@
+{
+  "header_types" : [
+    {
+      "name" : "scalars_0",
+      "id" : 0,
+      "fields" : [
+        ["tmp", 32, false],
+        ["tmp_0", 32, false],
+        ["tmp_1", 32, false],
+        ["tmp_2", 32, false],
+        ["tmp_3", 32, false],
+        ["tmp_4", 32, false],
+        ["metadata.mOpMode", 1, false],
+        ["metadata.blDetected", 1, false],
+        ["metadata.suspicious", 1, false],
+        ["metadata.blDiff", 32, false],
+        ["metadata.routerIp", 32, false],
+        ["metadata.routerId", 8, false],
+        ["metadata.srcIp", 32, false],
+        ["metadata.dstIp", 32, false],
+        ["metadata.srcPort", 16, false],
+        ["metadata.dstPort", 16, false],
+        ["metadata.suspicious_threshold", 32, false],
+        ["metadata.attack_threshold", 32, false],
+        ["metadata.sketch_min", 32, false],
+        ["metadata.index_sketch0", 32, false],
+        ["metadata.index_sketch1", 32, false],
+        ["metadata.index_sketch2", 32, false],
+        ["metadata.index_sketch3", 32, false],
+        ["metadata.index_sketch4", 32, false],
+        ["metadata.index_sketch5", 32, false],
+        ["metadata.value_sketch0", 32, false],
+        ["metadata.value_sketch1", 32, false],
+        ["metadata.value_sketch2", 32, false],
+        ["metadata.value_sketch3", 32, false],
+        ["metadata.value_sketch4", 32, false],
+        ["metadata.value_sketch5", 32, false],
+        ["metadata.addedToBl", 1, false],
+        ["metadata.index_bl0", 32, false],
+        ["metadata.index_bl1", 32, false],
+        ["metadata.index_bl2", 32, false],
+        ["metadata.index_bl3", 32, false],
+        ["metadata.value_bl0", 32, false],
+        ["metadata.value_bl1", 32, false],
+        ["metadata.value_bl2", 32, false],
+        ["metadata.value_bl3", 32, false],
+        ["_padding_0", 4, false]
+      ]
+    },
+    {
+      "name" : "standard_metadata",
+      "id" : 1,
+      "fields" : [
+        ["ingress_port", 9, false],
+        ["egress_spec", 9, false],
+        ["egress_port", 9, false],
+        ["instance_type", 32, false],
+        ["packet_length", 32, false],
+        ["enq_timestamp", 32, false],
+        ["enq_qdepth", 19, false],
+        ["deq_timedelta", 32, false],
+        ["deq_qdepth", 19, false],
+        ["ingress_global_timestamp", 48, false],
+        ["egress_global_timestamp", 48, false],
+        ["mcast_grp", 16, false],
+        ["egress_rid", 16, false],
+        ["checksum_error", 1, false],
+        ["parser_error", 32, false],
+        ["priority", 3, false],
+        ["_padding", 3, false]
+      ]
+    },
+    {
+      "name" : "ethernet_t",
+      "id" : 2,
+      "fields" : [
+        ["dstAddr", 48, false],
+        ["srcAddr", 48, false],
+        ["etherType", 16, false]
+      ]
+    },
+    {
+      "name" : "ipv4_t",
+      "id" : 3,
+      "fields" : [
+        ["version", 4, false],
+        ["ihl", 4, false],
+        ["dscp", 6, false],
+        ["ecn", 2, false],
+        ["totalLen", 16, false],
+        ["identification", 16, false],
+        ["flags", 3, false],
+        ["fragOffset", 13, false],
+        ["ttl", 8, false],
+        ["protocol", 8, false],
+        ["hdrChecksum", 16, false],
+        ["srcAddr", 32, false],
+        ["dstAddr", 32, false]
+      ]
+    },
+    {
+      "name" : "tcp_t",
+      "id" : 4,
+      "fields" : [
+        ["srcPort", 16, false],
+        ["dstPort", 16, false],
+        ["seqNo", 32, false],
+        ["ackNo", 32, false],
+        ["dataOffset", 4, false],
+        ["res", 4, false],
+        ["flags", 8, false],
+        ["window", 16, false],
+        ["checksum", 16, false],
+        ["urgentPtr", 16, false]
+      ]
+    },
+    {
+      "name" : "udp_t",
+      "id" : 5,
+      "fields" : [
+        ["srcPort", 16, false],
+        ["dstPort", 16, false],
+        ["length_", 16, false],
+        ["checksum", 16, false]
+      ]
+    },
+    {
+      "name" : "ctrl_t",
+      "id" : 6,
+      "fields" : [
+        ["routerId", 8, false],
+        ["flag", 8, false],
+        ["counterValue", 32, false]
+      ]
+    }
+  ],
+  "headers" : [
+    {
+      "name" : "scalars",
+      "id" : 0,
+      "header_type" : "scalars_0",
+      "metadata" : true,
+      "pi_omit" : true
+    },
+    {
+      "name" : "standard_metadata",
+      "id" : 1,
+      "header_type" : "standard_metadata",
+      "metadata" : true,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ethernet",
+      "id" : 2,
+      "header_type" : "ethernet_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ipv4",
+      "id" : 3,
+      "header_type" : "ipv4_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "tcp",
+      "id" : 4,
+      "header_type" : "tcp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "udp",
+      "id" : 5,
+      "header_type" : "udp_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ctrl",
+      "id" : 6,
+      "header_type" : "ctrl_t",
+      "metadata" : false,
+      "pi_omit" : true
+    }
+  ],
+  "header_stacks" : [],
+  "header_union_types" : [],
+  "header_unions" : [],
+  "header_union_stacks" : [],
+  "field_lists" : [],
+  "errors" : [
+    ["NoError", 1],
+    ["PacketTooShort", 2],
+    ["NoMatch", 3],
+    ["StackOutOfBounds", 4],
+    ["HeaderTooShort", 5],
+    ["ParserTimeout", 6],
+    ["ParserInvalidArgument", 7]
+  ],
+  "enums" : [],
+  "parsers" : [
+    {
+      "name" : "parser",
+      "id" : 0,
+      "init_state" : "start",
+      "parse_states" : [
+        {
+          "name" : "start",
+          "id" : 0,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ethernet"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x1234",
+              "mask" : null,
+              "next_state" : "parse_ipv4"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x0800",
+              "mask" : null,
+              "next_state" : "parse_ipv4"
+            },
+            {
+              "value" : "default",
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "etherType"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_ipv4",
+          "id" : 1,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ipv4"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x06",
+              "mask" : null,
+              "next_state" : "parse_tcp"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x11",
+              "mask" : null,
+              "next_state" : "parse_udp"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "protocol"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_tcp",
+          "id" : 2,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "tcp"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x1234",
+              "mask" : null,
+              "next_state" : "parse_ctrl"
+            },
+            {
+              "value" : "default",
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "etherType"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_udp",
+          "id" : 3,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "udp"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x1234",
+              "mask" : null,
+              "next_state" : "parse_ctrl"
+            },
+            {
+              "value" : "default",
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "etherType"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_ctrl",
+          "id" : 4,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "regular",
+                  "value" : "ctrl"
+                }
+              ],
+              "op" : "extract"
+            }
+          ],
+          "transitions" : [
+            {
+              "value" : "default",
+              "mask" : null,
+              "next_state" : null
+            }
+          ],
+          "transition_key" : []
+        }
+      ]
+    }
+  ],
+  "parse_vsets" : [],
+  "deparsers" : [
+    {
+      "name" : "deparser",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "../include/parsers.p4",
+        "line" : 57,
+        "column" : 8,
+        "source_fragment" : "MyDeparser"
+      },
+      "order" : ["ethernet", "ipv4", "tcp", "udp", "ctrl"]
+    }
+  ],
+  "meter_arrays" : [],
+  "counter_arrays" : [],
+  "register_arrays" : [
+    {
+      "name" : "ATTACK_THRESHOLD",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 24,
+        "column" : 22,
+        "source_fragment" : "ATTACK_THRESHOLD"
+      },
+      "size" : 1,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch0",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 27,
+        "column" : 24,
+        "source_fragment" : "sketch0"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch1",
+      "id" : 2,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 28,
+        "column" : 24,
+        "source_fragment" : "sketch1"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch2",
+      "id" : 3,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 29,
+        "column" : 24,
+        "source_fragment" : "sketch2"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch3",
+      "id" : 4,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 30,
+        "column" : 24,
+        "source_fragment" : "sketch3"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch4",
+      "id" : 5,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 31,
+        "column" : 24,
+        "source_fragment" : "sketch4"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    },
+    {
+      "name" : "sketch5",
+      "id" : 6,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 32,
+        "column" : 24,
+        "source_fragment" : "sketch5"
+      },
+      "size" : 4096,
+      "bitwidth" : 32
+    }
+  ],
+  "calculations" : [
+    {
+      "name" : "calc",
+      "id" : 0,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xaaaaaaaaaaaaaaaa",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_0",
+      "id" : 1,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xbbbbbbbbbbbbbbbb",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_1",
+      "id" : 2,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xcccccccccccccccc",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_2",
+      "id" : 3,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xdddddddddddddddd",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_3",
+      "id" : 4,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xeeeeeeeeeeeeeeee",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_4",
+      "id" : 5,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xffffffffffffffff",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_5",
+      "id" : 6,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xaaaaaaaaaaaaaaaa",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_6",
+      "id" : 7,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xbbbbbbbbbbbbbbbb",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_7",
+      "id" : 8,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xcccccccccccccccc",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_8",
+      "id" : 9,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xdddddddddddddddd",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_9",
+      "id" : 10,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xeeeeeeeeeeeeeeee",
+          "bitwidth" : 64
+        }
+      ]
+    },
+    {
+      "name" : "calc_10",
+      "id" : 11,
+      "algo" : "crc32",
+      "input" : [
+        {
+          "type" : "field",
+          "value" : ["ipv4", "srcAddr"]
+        },
+        {
+          "type" : "field",
+          "value" : ["ipv4", "dstAddr"]
+        },
+        {
+          "type" : "hexstr",
+          "value" : "0xffffffffffffffff",
+          "bitwidth" : 64
+        }
+      ]
+    }
+  ],
+  "learn_lists" : [],
+  "actions" : [
+    {
+      "name" : "NoAction",
+      "id" : 0,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "NoAction",
+      "id" : 1,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "MyIngress.drop",
+      "id" : 2,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "mark_to_drop",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "standard_metadata"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 51,
+            "column" : 8,
+            "source_fragment" : "mark_to_drop(standard_metadata)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "MyIngress.mark_attack_traffic",
+      "id" : 3,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.attack_threshold"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "ATTACK_THRESHOLD"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 55,
+            "column" : 8,
+            "source_fragment" : "ATTACK_THRESHOLD.read(meta.attack_threshold, 0)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x80000000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 56,
+            "column" : 8,
+            "source_fragment" : "meta.sketch_min = 1<<31"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 57,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch0, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xAAAAAAAAAAAAAAAA}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch0"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 57,
+            "column" : 143,
+            "source_fragment" : "sketch0.read(meta.value_sketch0, meta.index_sketch0)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch0"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch0"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x80000000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 57,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch0 < meta.sketch_min ? meta.value_sketch0 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "hexstr",
+                    "value" : "0x80000000"
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch0"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0x80000000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 57,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch0 < meta.sketch_min ? meta.value_sketch0 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 57,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch1"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_0"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 58,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch1, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xBBBBBBBBBBBBBBBB}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch1"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch1"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch1"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 58,
+            "column" : 143,
+            "source_fragment" : "sketch1.read(meta.value_sketch1, meta.index_sketch1)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch1"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_0"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch1"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 58,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch1 < meta.sketch_min ? meta.value_sketch1 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_0"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch1"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "tmp"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 58,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch1 < meta.sketch_min ? meta.value_sketch1 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 58,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch2"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_1"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 59,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch2, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xCCCCCCCCCCCCCCCC}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch2"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch2"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch2"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 59,
+            "column" : 143,
+            "source_fragment" : "sketch2.read(meta.value_sketch2, meta.index_sketch2)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch2"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_1"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch2"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_0"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 59,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch2 < meta.sketch_min ? meta.value_sketch2 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_0"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_1"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch2"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "tmp_0"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 59,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch2 < meta.sketch_min ? meta.value_sketch2 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 59,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch3"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_2"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 60,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch3, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xDDDDDDDDDDDDDDDD}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch3"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch3"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch3"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 60,
+            "column" : 143,
+            "source_fragment" : "sketch3.read(meta.value_sketch3, meta.index_sketch3)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_2"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch3"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_2"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch3"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_1"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 60,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch3 < meta.sketch_min ? meta.value_sketch3 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_2"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_1"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_2"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch3"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "tmp_1"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 60,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch3 < meta.sketch_min ? meta.value_sketch3 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_2"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 60,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch4"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_3"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 61,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch4, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xEEEEEEEEEEEEEEEE}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch4"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch4"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch4"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 61,
+            "column" : 143,
+            "source_fragment" : "sketch4.read(meta.value_sketch4, meta.index_sketch4)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_3"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch4"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_3"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch4"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_2"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 61,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch4 < meta.sketch_min ? meta.value_sketch4 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_3"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_2"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_3"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch4"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "tmp_2"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 61,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch4 < meta.sketch_min ? meta.value_sketch4 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_3"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 61,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch5"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_4"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 62,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch5, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xFFFFFFFFFFFFFFFF}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch5"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch5"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch5"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 62,
+            "column" : 143,
+            "source_fragment" : "sketch5.read(meta.value_sketch5, meta.index_sketch5)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.value_sketch5"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_4"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "<",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch5"]
+                      },
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["scalars", "tmp_3"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 62,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch5 < meta.sketch_min ? meta.value_sketch5 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_3"]
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "tmp_4"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "not",
+                      "left" : null,
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.value_sketch5"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "tmp_3"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 62,
+            "column" : 215,
+            "source_fragment" : "meta.value_sketch5 < meta.sketch_min ? meta.value_sketch5 : meta.sketch_min"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.sketch_min"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_4"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 62,
+            "column" : 197,
+            "source_fragment" : "meta.sketch_min ="
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.blDetected"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "?",
+                  "left" : {
+                    "type" : "hexstr",
+                    "value" : "0x01"
+                  },
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.blDetected"]
+                  },
+                  "cond" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "or",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : ">",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "-",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ctrl", "counterValue"]
+                                  },
+                                  "right" : {
+                                    "type" : "field",
+                                    "value" : ["scalars", "tmp_4"]
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffffffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.attack_threshold"]
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : ">",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "-",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["scalars", "tmp_4"]
+                                  },
+                                  "right" : {
+                                    "type" : "field",
+                                    "value" : ["ctrl", "counterValue"]
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffffffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["scalars", "metadata.attack_threshold"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 65,
+            "column" : 12,
+            "source_fragment" : "meta.blDetected ="
+          }
+        }
+      ]
+    },
+    {
+      "name" : "MyIngress.forward",
+      "id" : 4,
+      "runtime_data" : [
+        {
+          "name" : "port",
+          "bitwidth" : 9
+        }
+      ],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "runtime_data",
+              "value" : 0
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 70,
+            "column" : 8,
+            "source_fragment" : "standard_metadata.egress_spec = port"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act",
+      "id" : 5,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "ingress_port"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 101,
+            "column" : 16,
+            "source_fragment" : "standard_metadata.egress_spec = standard_metadata.ingress_port"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "NoAction",
+      "id" : 6,
+      "runtime_data" : [],
+      "primitives" : []
+    },
+    {
+      "name" : "MyEgress.sketch_count_access",
+      "id" : 7,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch0"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_5"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 118,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch0, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xAAAAAAAAAAAAAAAA}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch0"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch0"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 118,
+            "column" : 143,
+            "source_fragment" : "sketch0.read(meta.value_sketch0, meta.index_sketch0)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch0"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 118,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch0 = meta.value_sketch0 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch0"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 118,
+            "column" : 241,
+            "source_fragment" : "sketch0.write(meta.index_sketch0, meta.value_sketch0)"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch1"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_6"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 119,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch1, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xBBBBBBBBBBBBBBBB}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch1"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch1"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch1"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 119,
+            "column" : 143,
+            "source_fragment" : "sketch1.read(meta.value_sketch1, meta.index_sketch1)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch1"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch1"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 119,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch1 = meta.value_sketch1 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch1"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch1"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch1"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 119,
+            "column" : 241,
+            "source_fragment" : "sketch1.write(meta.index_sketch1, meta.value_sketch1)"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch2"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_7"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 120,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch2, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xCCCCCCCCCCCCCCCC}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch2"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch2"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch2"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 120,
+            "column" : 143,
+            "source_fragment" : "sketch2.read(meta.value_sketch2, meta.index_sketch2)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch2"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch2"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 120,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch2 = meta.value_sketch2 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch2"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch2"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch2"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 120,
+            "column" : 241,
+            "source_fragment" : "sketch2.write(meta.index_sketch2, meta.value_sketch2)"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch3"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_8"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 121,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch3, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xDDDDDDDDDDDDDDDD}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch3"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch3"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch3"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 121,
+            "column" : 143,
+            "source_fragment" : "sketch3.read(meta.value_sketch3, meta.index_sketch3)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch3"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch3"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 121,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch3 = meta.value_sketch3 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch3"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch3"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch3"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 121,
+            "column" : 241,
+            "source_fragment" : "sketch3.write(meta.index_sketch3, meta.value_sketch3)"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch4"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_9"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 122,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch4, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xEEEEEEEEEEEEEEEE}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch4"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch4"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch4"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 122,
+            "column" : 143,
+            "source_fragment" : "sketch4.read(meta.value_sketch4, meta.index_sketch4)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch4"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 122,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch4 = meta.value_sketch4 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch4"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch4"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch4"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 122,
+            "column" : 241,
+            "source_fragment" : "sketch4.write(meta.index_sketch4, meta.value_sketch4)"
+          }
+        },
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch5"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00000000"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc_10"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00001000"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 123,
+            "column" : 8,
+            "source_fragment" : "hash(meta.index_sketch5, HashAlgorithm.crc32, (bit<32>)0, {hdr.ipv4.srcAddr, hdr.ipv4.dstAddr, 64w0xFFFFFFFFFFFFFFFF}, (bit<32>)4096)"
+          }
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch5"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "sketch5"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch5"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 123,
+            "column" : 143,
+            "source_fragment" : "sketch5.read(meta.value_sketch5, meta.index_sketch5)"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch5"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "metadata.value_sketch5"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000001"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 123,
+            "column" : 197,
+            "source_fragment" : "meta.value_sketch5 = meta.value_sketch5 +1"
+          }
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "sketch5"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.index_sketch5"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.value_sketch5"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 123,
+            "column" : 241,
+            "source_fragment" : "sketch5.write(meta.index_sketch5, meta.value_sketch5)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "MyEgress.set_invalid_ctrl_hdr",
+      "id" : 8,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "remove_header",
+          "parameters" : [
+            {
+              "type" : "header",
+              "value" : "ctrl"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 136,
+            "column" : 8,
+            "source_fragment" : "hdr.ctrl.setInvalid()"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act_0",
+      "id" : 9,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.routerIp"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01010101"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 159,
+            "column" : 12,
+            "source_fragment" : "meta.routerIp = 32w0x01010101"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ctrl", "flag"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "../include/headers.p4",
+            "line" : 24,
+            "column" : 14,
+            "source_fragment" : "0x01 ..."
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "dstAddr"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01010101"
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 159,
+            "column" : 28,
+            "source_fragment" : "32w0x01010101; ..."
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act_1",
+      "id" : 10,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ethernet", "etherType"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x0800"
+            }
+          ],
+          "source_info" : {
+            "filename" : "../include/headers.p4",
+            "line" : 5,
+            "column" : 26,
+            "source_fragment" : "0x800; ..."
+          }
+        }
+      ]
+    }
+  ],
+  "pipelines" : [
+    {
+      "name" : "ingress",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 46,
+        "column" : 8,
+        "source_fragment" : "MyIngress"
+      },
+      "init_table" : "MyIngress.direct_forward",
+      "tables" : [
+        {
+          "name" : "MyIngress.direct_forward",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 73,
+            "column" : 10,
+            "source_fragment" : "direct_forward"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "standard_metadata.ingress_port",
+              "target" : ["standard_metadata", "ingress_port"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [4, 0],
+          "actions" : ["MyIngress.forward", "NoAction"],
+          "base_default_next" : "node_3",
+          "next_tables" : {
+            "MyIngress.forward" : "node_3",
+            "NoAction" : "node_3"
+          },
+          "default_entry" : {
+            "action_id" : 0,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          },
+          "entries" : [
+            {
+              "source_info" : {
+                "filename" : "access.p4",
+                "line" : 84,
+                "column" : 12,
+                "source_fragment" : "9w1: forward(9w2)"
+              },
+              "match_key" : [
+                {
+                  "match_type" : "exact",
+                  "key" : "0x0001"
+                }
+              ],
+              "action_entry" : {
+                "action_id" : 4,
+                "action_data" : ["0x2"]
+              },
+              "priority" : 1
+            },
+            {
+              "source_info" : {
+                "filename" : "access.p4",
+                "line" : 85,
+                "column" : 12,
+                "source_fragment" : "9w2: forward(9w1)"
+              },
+              "match_key" : [
+                {
+                  "match_type" : "exact",
+                  "key" : "0x0002"
+                }
+              ],
+              "action_entry" : {
+                "action_id" : 4,
+                "action_data" : ["0x1"]
+              },
+              "priority" : 2
+            },
+            {
+              "source_info" : {
+                "filename" : "access.p4",
+                "line" : 86,
+                "column" : 12,
+                "source_fragment" : "9w3: forward(9w1)"
+              },
+              "match_key" : [
+                {
+                  "match_type" : "exact",
+                  "key" : "0x0003"
+                }
+              ],
+              "action_entry" : {
+                "action_id" : 4,
+                "action_data" : ["0x1"]
+              },
+              "priority" : 3
+            }
+          ]
+        },
+        {
+          "name" : "tbl_NoAction",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 94,
+            "column" : 12,
+            "source_fragment" : "NoAction()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [1],
+          "actions" : ["NoAction"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "NoAction" : null
+          },
+          "default_entry" : {
+            "action_id" : 1,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_mark_attack_traffic",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 98,
+            "column" : 12,
+            "source_fragment" : "mark_attack_traffic()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [3],
+          "actions" : ["MyIngress.mark_attack_traffic"],
+          "base_default_next" : "node_7",
+          "next_tables" : {
+            "MyIngress.mark_attack_traffic" : "node_7"
+          },
+          "default_entry" : {
+            "action_id" : 3,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_act",
+          "id" : 3,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 101,
+            "column" : 46,
+            "source_fragment" : "="
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [5],
+          "actions" : ["act"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "act" : null
+          },
+          "default_entry" : {
+            "action_id" : 5,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_drop",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 104,
+            "column" : 12,
+            "source_fragment" : "drop()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [2],
+          "actions" : ["MyIngress.drop"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "MyIngress.drop" : null
+          },
+          "default_entry" : {
+            "action_id" : 2,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        }
+      ],
+      "action_profiles" : [],
+      "conditionals" : [
+        {
+          "name" : "node_3",
+          "id" : 0,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 93,
+            "column" : 11,
+            "source_fragment" : "hdr.ipv4.isValid() && !hdr.ctrl.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "and",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "d2b",
+                  "left" : null,
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["ipv4", "$valid$"]
+                  }
+                }
+              },
+              "right" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "not",
+                  "left" : null,
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "d2b",
+                      "left" : null,
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["ctrl", "$valid$"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "true_next" : "tbl_NoAction",
+          "false_next" : "node_5"
+        },
+        {
+          "name" : "node_5",
+          "id" : 1,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 95,
+            "column" : 18,
+            "source_fragment" : "hdr.ctrl.isValid() && hdr.ctrl.flag == ControlMessageType.NOTIFICATION"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "and",
+              "left" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "d2b",
+                  "left" : null,
+                  "right" : {
+                    "type" : "field",
+                    "value" : ["ctrl", "$valid$"]
+                  }
+                }
+              },
+              "right" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "==",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["ctrl", "flag"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x00"
+                  }
+                }
+              }
+            }
+          },
+          "true_next" : "tbl_mark_attack_traffic",
+          "false_next" : "tbl_drop"
+        },
+        {
+          "name" : "node_7",
+          "id" : 2,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 100,
+            "column" : 15,
+            "source_fragment" : "meta.blDetected == TrafficType.ATTACK"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "metadata.blDetected"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x01"
+              }
+            }
+          },
+          "false_next" : null,
+          "true_next" : "tbl_act"
+        }
+      ]
+    },
+    {
+      "name" : "egress",
+      "id" : 1,
+      "source_info" : {
+        "filename" : "access.p4",
+        "line" : 113,
+        "column" : 8,
+        "source_fragment" : "MyEgress"
+      },
+      "init_table" : "MyEgress.count_requests",
+      "tables" : [
+        {
+          "name" : "MyEgress.count_requests",
+          "id" : 5,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 139,
+            "column" : 10,
+            "source_fragment" : "count_requests"
+          },
+          "key" : [
+            {
+              "match_type" : "exact",
+              "name" : "hdr.ipv4.fragOffset",
+              "target" : ["ipv4", "fragOffset"],
+              "mask" : null
+            },
+            {
+              "match_type" : "exact",
+              "name" : "hdr.udp.dstPort",
+              "target" : ["udp", "dstPort"],
+              "mask" : null
+            }
+          ],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [7, 6],
+          "actions" : ["MyEgress.sketch_count_access", "NoAction"],
+          "base_default_next" : "node_13",
+          "next_tables" : {
+            "MyEgress.sketch_count_access" : "node_13",
+            "NoAction" : "node_13"
+          },
+          "default_entry" : {
+            "action_id" : 6,
+            "action_const" : false,
+            "action_data" : [],
+            "action_entry_const" : false
+          },
+          "entries" : [
+            {
+              "source_info" : {
+                "filename" : "access.p4",
+                "line" : 149,
+                "column" : 12,
+                "source_fragment" : "(0, 53) : sketch_count_access()"
+              },
+              "match_key" : [
+                {
+                  "match_type" : "exact",
+                  "key" : "0x0000"
+                },
+                {
+                  "match_type" : "exact",
+                  "key" : "0x0035"
+                }
+              ],
+              "action_entry" : {
+                "action_id" : 7,
+                "action_data" : []
+              },
+              "priority" : 1
+            }
+          ]
+        },
+        {
+          "name" : "tbl_act_0",
+          "id" : 6,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 159,
+            "column" : 26,
+            "source_fragment" : "= 32w0x01010101; ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [9],
+          "actions" : ["act_0"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "act_0" : null
+          },
+          "default_entry" : {
+            "action_id" : 9,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_set_invalid_ctrl_hdr",
+          "id" : 7,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 164,
+            "column" : 12,
+            "source_fragment" : "set_invalid_ctrl_hdr()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [8],
+          "actions" : ["MyEgress.set_invalid_ctrl_hdr"],
+          "base_default_next" : "tbl_act_1",
+          "next_tables" : {
+            "MyEgress.set_invalid_ctrl_hdr" : "tbl_act_1"
+          },
+          "default_entry" : {
+            "action_id" : 8,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_act_1",
+          "id" : 8,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 166,
+            "column" : 35,
+            "source_fragment" : "="
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [10],
+          "actions" : ["act_1"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "act_1" : null
+          },
+          "default_entry" : {
+            "action_id" : 10,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        }
+      ],
+      "action_profiles" : [],
+      "conditionals" : [
+        {
+          "name" : "node_13",
+          "id" : 3,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 156,
+            "column" : 11,
+            "source_fragment" : "meta.blDetected == TrafficType.ATTACK"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "==",
+              "left" : {
+                "type" : "field",
+                "value" : ["scalars", "metadata.blDetected"]
+              },
+              "right" : {
+                "type" : "hexstr",
+                "value" : "0x01"
+              }
+            }
+          },
+          "true_next" : "tbl_act_0",
+          "false_next" : "tbl_set_invalid_ctrl_hdr"
+        }
+      ]
+    }
+  ],
+  "checksums" : [],
+  "force_arith" : [],
+  "extern_instances" : [],
+  "field_aliases" : [
+    [
+      "queueing_metadata.enq_timestamp",
+      ["standard_metadata", "enq_timestamp"]
+    ],
+    [
+      "queueing_metadata.enq_qdepth",
+      ["standard_metadata", "enq_qdepth"]
+    ],
+    [
+      "queueing_metadata.deq_timedelta",
+      ["standard_metadata", "deq_timedelta"]
+    ],
+    [
+      "queueing_metadata.deq_qdepth",
+      ["standard_metadata", "deq_qdepth"]
+    ],
+    [
+      "intrinsic_metadata.ingress_global_timestamp",
+      ["standard_metadata", "ingress_global_timestamp"]
+    ],
+    [
+      "intrinsic_metadata.egress_global_timestamp",
+      ["standard_metadata", "egress_global_timestamp"]
+    ],
+    [
+      "intrinsic_metadata.mcast_grp",
+      ["standard_metadata", "mcast_grp"]
+    ],
+    [
+      "intrinsic_metadata.egress_rid",
+      ["standard_metadata", "egress_rid"]
+    ],
+    [
+      "intrinsic_metadata.priority",
+      ["standard_metadata", "priority"]
+    ]
+  ],
+  "program" : "access.p4",
+  "__meta__" : {
+    "version" : [2, 18],
+    "compiler" : "https://github.com/p4lang/p4c"
+  }
+}
