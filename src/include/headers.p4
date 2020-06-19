@@ -106,6 +106,11 @@ struct metadata {
     bit<32> value_sketch4;
     bit<32> value_sketch5;
 
+    bit<32>     window_sketch0;
+    bit<32>     window_sketch1;
+    bit<32>     window_sketch2;
+
+
     // BL
     bit<1>      addedToBl;
     bit<32>     index_bl0;
@@ -117,6 +122,9 @@ struct metadata {
     bit<32>     value_bl1;
     bit<32>     value_bl2;
     bit<32>     value_bl3;
+
+    bit<104>    flowId;
+    bit<32>     mAbsWindowId;
 }
 
 struct headers {
