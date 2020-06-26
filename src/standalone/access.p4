@@ -5,29 +5,6 @@
 #include "../include/headers.p4"
 #include "../include/parsers.p4"
 
-/* CONSTANTS */
-// #define SKETCH_ROW_LENGTH 4096
-// #define SKETCH_CELL_BIT_WIDTH 32
-
-// #define SKETCH_INIT(num) register<bit<SKETCH_CELL_BIT_WIDTH>>(SKETCH_ROW_LENGTH) sketch##num
-
-// #define SKETCH_COUNT(num, ip1, ip2, seed) hash(meta.index_sketch##num, HashAlgorithm.crc32, (bit<32>)0, {ip1, ip2, seed}, (bit<32>)SKETCH_ROW_LENGTH);\
-//  sketch##num.read(meta.value_sketch##num, meta.index_sketch##num); \
-//  meta.value_sketch##num = meta.value_sketch##num +1; \
-//  sketch##num.write(meta.index_sketch##num, meta.value_sketch##num)
-
-// #define SKETCH_MIN(num, ip1, ip2, seed) hash(meta.index_sketch##num, HashAlgorithm.crc32, (bit<32>)0, {ip1, ip2, seed}, (bit<32>)SKETCH_ROW_LENGTH);\
-//  sketch##num.read(meta.value_sketch##num, meta.index_sketch##num); \
-//  meta.sketch_min = meta.value_sketch##num < meta.sketch_min ? meta.value_sketch##num : meta.sketch_min
-
-// /* Initialize CMS */
-// SKETCH_INIT(0);
-// SKETCH_INIT(1);
-// SKETCH_INIT(2);
-// SKETCH_INIT(3);
-// SKETCH_INIT(4);
-// SKETCH_INIT(5);
-
 /* MACROS */
 #define SKETCH_ROW_LENGTH 8160
 #define SKETCH_CELL_BIT_WIDTH 32
@@ -83,29 +60,6 @@ control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
 control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
-
-    action extract_flow_id () {
-        // meta.flowId[103:72] = hdr.ipv4.srcAddr;
-        // meta.flowId[71:40] = hdr.ipv4.dstAddr;
-        meta.flowId[103:72] = hdr.ipv4.dstAddr;
-        meta.flowId[71:40] = hdr.ipv4.srcAddr;
-        meta.flowId[39:32] = hdr.ipv4.protocol;
-        
-        if(hdr.tcp.isValid()) {
-            meta.flowId[31:16] = hdr.tcp.dstPort; 
-            meta.flowId[15:0] = hdr.tcp.srcPort;
-            // meta.flowId[31:16] = hdr.tcp.srcPort;
-            // meta.flowId[15:0] = hdr.tcp.dstPort;
-        } else if(hdr.udp.isValid()) {
-            meta.flowId[31:16] = hdr.udp.dstPort;
-            meta.flowId[15:0] = hdr.udp.srcPort;
-            // meta.flowId[31:16] = hdr.udp.srcPort;
-            // meta.flowId[15:0] = hdr.udp.dstPort;
-        } else {
-            meta.flowId[31:16] = 0;
-            meta.flowId[15:0] = 0;
-        }
-    }
     
     action get_absolute_window_id(bit<32> absWinId){
         bit<32> wrapAroundConstant;
@@ -248,6 +202,7 @@ control MyEgress(inout headers hdr,
     }
 
     apply {
+        extract_flow_id();
         count_requests.apply();
         if(meta.blDetected == TrafficType.ATTACK) {
             // Prepare control packet to be sent back to Border to blocking

@@ -7,6 +7,8 @@
         ["tmp", 32, false],
         ["wrapAroundConstant_0", 32, false],
         ["globalWinId_0", 32, false],
+        ["cond_4", 1, false],
+        ["cond_5", 1, false],
         ["userMetadata.mOpMode", 1, false],
         ["userMetadata.blDetected", 1, false],
         ["userMetadata.suspicious", 1, false],
@@ -46,7 +48,7 @@
         ["userMetadata.value_bl3", 32, false],
         ["userMetadata.flowId", 104, false],
         ["userMetadata.mAbsWindowId", 32, false],
-        ["_padding_0", 4, false]
+        ["_padding_0", 2, false]
       ]
     },
     {
@@ -404,7 +406,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 55,
+        "line" : 32,
         "column" : 24,
         "source_fragment" : "sketch0"
       },
@@ -416,7 +418,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 56,
+        "line" : 33,
         "column" : 24,
         "source_fragment" : "window0"
       },
@@ -428,7 +430,7 @@
       "id" : 2,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 57,
+        "line" : 34,
         "column" : 24,
         "source_fragment" : "sketch1"
       },
@@ -440,7 +442,7 @@
       "id" : 3,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 58,
+        "line" : 35,
         "column" : 24,
         "source_fragment" : "window1"
       },
@@ -452,7 +454,7 @@
       "id" : 4,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 59,
+        "line" : 36,
         "column" : 24,
         "source_fragment" : "sketch2"
       },
@@ -464,7 +466,7 @@
       "id" : 5,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 60,
+        "line" : 37,
         "column" : 24,
         "source_fragment" : "window2"
       },
@@ -476,7 +478,7 @@
       "id" : 6,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 63,
+        "line" : 40,
         "column" : 22,
         "source_fragment" : "ATTACK_THRESHOLD"
       },
@@ -488,7 +490,7 @@
       "id" : 7,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 67,
+        "line" : 44,
         "column" : 23,
         "source_fragment" : "GLOBAL_WINDOW_ID"
       },
@@ -500,7 +502,7 @@
       "id" : 8,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 68,
+        "line" : 45,
         "column" : 23,
         "source_fragment" : "WRAP_AROUND_CONSTANT"
       },
@@ -648,7 +650,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 112,
+            "line" : 66,
             "column" : 8,
             "source_fragment" : "WRAP_AROUND_CONSTANT.read(wrapAroundConstant, 0)"
           }
@@ -671,7 +673,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 115,
+            "line" : 69,
             "column" : 8,
             "source_fragment" : "GLOBAL_WINDOW_ID.read(globalWinId, 0)"
           }
@@ -793,7 +795,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 124,
+            "line" : 78,
             "column" : 20,
             "source_fragment" : "absWinId + wrapAroundConstant; ..."
           }
@@ -835,7 +837,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 124,
+            "line" : 78,
             "column" : 20,
             "source_fragment" : "absWinId + wrapAroundConstant; ..."
           }
@@ -877,7 +879,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 124,
+            "line" : 78,
             "column" : 20,
             "source_fragment" : "absWinId + wrapAroundConstant"
           }
@@ -900,7 +902,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 128,
+            "line" : 82,
             "column" : 8,
             "source_fragment" : "GLOBAL_WINDOW_ID.write(0, globalWinId)"
           }
@@ -923,7 +925,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 129,
+            "line" : 83,
             "column" : 8,
             "source_fragment" : "WRAP_AROUND_CONSTANT.write(0, wrapAroundConstant)"
           }
@@ -945,7 +947,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 133,
+            "line" : 87,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -975,7 +977,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 137,
+            "line" : 91,
             "column" : 8,
             "source_fragment" : "ATTACK_THRESHOLD.read(meta.attack_threshold, 0)"
           }
@@ -994,7 +996,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 138,
+            "line" : 92,
             "column" : 8,
             "source_fragment" : "meta.sketch_min = 1<<31"
           }
@@ -1021,7 +1023,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 139,
+            "line" : 93,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch0, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xAAAAAAAAAAAAAAAA}, (bit<32>)8160)"
           }
@@ -1044,7 +1046,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 139,
+            "line" : 93,
             "column" : 120,
             "source_fragment" : "sketch0.read(meta.value_sketch0, meta.index_sketch0)"
           }
@@ -1067,7 +1069,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 139,
+            "line" : 93,
             "column" : 174,
             "source_fragment" : "window0.read(meta.window_sketch0, meta.index_sketch0)"
           }
@@ -1139,7 +1141,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 139,
+            "line" : 93,
             "column" : 229,
             "source_fragment" : "meta.value_sketch0 = (meta.value_sketch0 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch0)"
           }
@@ -1185,7 +1187,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 139,
+            "line" : 93,
             "column" : 323,
             "source_fragment" : "meta.sketch_min ="
           }
@@ -1212,7 +1214,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 140,
+            "line" : 94,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch1, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xBBBBBBBBBBBBBBBB}, (bit<32>)8160)"
           }
@@ -1235,7 +1237,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 140,
+            "line" : 94,
             "column" : 120,
             "source_fragment" : "sketch1.read(meta.value_sketch1, meta.index_sketch1)"
           }
@@ -1258,7 +1260,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 140,
+            "line" : 94,
             "column" : 174,
             "source_fragment" : "window1.read(meta.window_sketch1, meta.index_sketch1)"
           }
@@ -1330,7 +1332,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 140,
+            "line" : 94,
             "column" : 229,
             "source_fragment" : "meta.value_sketch1 = (meta.value_sketch1 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch1)"
           }
@@ -1424,7 +1426,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 140,
+            "line" : 94,
             "column" : 323,
             "source_fragment" : "meta.sketch_min ="
           }
@@ -1451,7 +1453,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 141,
+            "line" : 95,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch2, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xCCCCCCCCCCCCCCCC}, (bit<32>)8160)"
           }
@@ -1474,7 +1476,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 141,
+            "line" : 95,
             "column" : 120,
             "source_fragment" : "sketch2.read(meta.value_sketch2, meta.index_sketch2)"
           }
@@ -1497,7 +1499,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 141,
+            "line" : 95,
             "column" : 174,
             "source_fragment" : "window2.read(meta.window_sketch2, meta.index_sketch2)"
           }
@@ -1569,7 +1571,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 141,
+            "line" : 95,
             "column" : 229,
             "source_fragment" : "meta.value_sketch2 = (meta.value_sketch2 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch2)"
           }
@@ -1759,7 +1761,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 141,
+            "line" : 95,
             "column" : 323,
             "source_fragment" : "meta.sketch_min ="
           }
@@ -2226,7 +2228,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 149,
+            "line" : 103,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -2234,7 +2236,7 @@
       ]
     },
     {
-      "name" : "access192",
+      "name" : "access146",
       "id" : 6,
       "runtime_data" : [],
       "primitives" : [
@@ -2252,7 +2254,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 192,
+            "line" : 146,
             "column" : 16,
             "source_fragment" : "standard_metadata.egress_spec = standard_metadata.ingress_port"
           }
@@ -2266,8 +2268,537 @@
       "primitives" : []
     },
     {
-      "name" : "MyEgress.sketch_count_access",
+      "name" : "MyEgress.extract_flow_id",
       "id" : 8,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "userMetadata.flowId"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "|",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "userMetadata.flowId"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000000ffffffffffffffffff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "<<",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ipv4", "srcAddr"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffffffffffffffffffffffffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x48"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffffffffffffffffffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffffffff000000000000000000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 163,
+            "column" : 8,
+            "source_fragment" : "meta.flowId[103:72] = hdr.ipv4.srcAddr"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "userMetadata.flowId"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "|",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "userMetadata.flowId"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffffffff00000000ffffffffff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "<<",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ipv4", "dstAddr"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffffffffffffffffffffffffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x28"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffffffffffffffffffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x00000000ffffffff0000000000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 164,
+            "column" : 8,
+            "source_fragment" : "meta.flowId[71:40] = hdr.ipv4.dstAddr"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "userMetadata.flowId"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "|",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "userMetadata.flowId"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffffffffffffffff00ffffffff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "<<",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ipv4", "protocol"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffffffffffffffffffffffffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x20"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffffffffffffffffffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0000000000000000ff00000000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 165,
+            "column" : 8,
+            "source_fragment" : "meta.flowId[39:32] = hdr.ipv4.protocol"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "cond_4"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "b2d",
+                  "left" : null,
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "d2b",
+                      "left" : null,
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["tcp", "$valid$"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "cond_5"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "b2d",
+                  "left" : null,
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "d2b",
+                      "left" : null,
+                      "right" : {
+                        "type" : "field",
+                        "value" : ["udp", "$valid$"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "userMetadata.flowId"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "|",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "userMetadata.flowId"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffffffffffffffffff0000ffff"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "<<",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "&",
+                                  "left" : {
+                                    "type" : "expression",
+                                    "value" : {
+                                      "op" : "?",
+                                      "left" : {
+                                        "type" : "field",
+                                        "value" : ["tcp", "srcPort"]
+                                      },
+                                      "right" : {
+                                        "type" : "expression",
+                                        "value" : {
+                                          "op" : "?",
+                                          "left" : {
+                                            "type" : "field",
+                                            "value" : ["udp", "srcPort"]
+                                          },
+                                          "right" : {
+                                            "type" : "hexstr",
+                                            "value" : "0x0000"
+                                          },
+                                          "cond" : {
+                                            "type" : "expression",
+                                            "value" : {
+                                              "op" : "d2b",
+                                              "left" : null,
+                                              "right" : {
+                                                "type" : "field",
+                                                "value" : ["scalars", "cond_5"]
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "cond" : {
+                                        "type" : "expression",
+                                        "value" : {
+                                          "op" : "d2b",
+                                          "left" : null,
+                                          "right" : {
+                                            "type" : "field",
+                                            "value" : ["scalars", "cond_4"]
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffffffffffffffffffffffffff"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0x10"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffffffffffffffffffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x000000000000000000ffff0000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "userMetadata.flowId"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "|",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["scalars", "userMetadata.flowId"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffffffffffffffffffffff0000"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "&",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "?",
+                              "left" : {
+                                "type" : "field",
+                                "value" : ["tcp", "dstPort"]
+                              },
+                              "right" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "?",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["udp", "dstPort"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0x0000"
+                                  },
+                                  "cond" : {
+                                    "type" : "expression",
+                                    "value" : {
+                                      "op" : "d2b",
+                                      "left" : null,
+                                      "right" : {
+                                        "type" : "field",
+                                        "value" : ["scalars", "cond_5"]
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "cond" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "d2b",
+                                  "left" : null,
+                                  "right" : {
+                                    "type" : "field",
+                                    "value" : ["scalars", "cond_4"]
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xffffffffffffffffffffffffff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x0000000000000000000000ffff"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "MyEgress.sketch_count_access",
+      "id" : 9,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -2292,7 +2823,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch0, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xAAAAAAAAAAAAAAAA}, (bit<32>)8160)"
           }
@@ -2315,7 +2846,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 120,
             "source_fragment" : "sketch0.read(meta.value_sketch0, meta.index_sketch0)"
           }
@@ -2338,7 +2869,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 173,
             "source_fragment" : "window0.read(meta.window_sketch0, meta.index_sketch0)"
           }
@@ -2410,7 +2941,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 228,
             "source_fragment" : "meta.value_sketch0 = (meta.value_sketch0 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch0)"
           }
@@ -2452,7 +2983,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 321,
             "source_fragment" : "meta.value_sketch0 = meta.value_sketch0 + 1"
           }
@@ -2471,7 +3002,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 365,
             "source_fragment" : "meta.window_sketch0 = meta.mAbsWindowId"
           }
@@ -2494,7 +3025,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 405,
             "source_fragment" : "sketch0.write(meta.index_sketch0, meta.value_sketch0)"
           }
@@ -2517,7 +3048,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 226,
+            "line" : 180,
             "column" : 459,
             "source_fragment" : "window0.write(meta.index_sketch0, meta.window_sketch0)"
           }
@@ -2544,7 +3075,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch1, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xBBBBBBBBBBBBBBBB}, (bit<32>)8160)"
           }
@@ -2567,7 +3098,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 120,
             "source_fragment" : "sketch1.read(meta.value_sketch1, meta.index_sketch1)"
           }
@@ -2590,7 +3121,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 173,
             "source_fragment" : "window1.read(meta.window_sketch1, meta.index_sketch1)"
           }
@@ -2662,7 +3193,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 228,
             "source_fragment" : "meta.value_sketch1 = (meta.value_sketch1 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch1)"
           }
@@ -2704,7 +3235,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 321,
             "source_fragment" : "meta.value_sketch1 = meta.value_sketch1 + 1"
           }
@@ -2723,7 +3254,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 365,
             "source_fragment" : "meta.window_sketch1 = meta.mAbsWindowId"
           }
@@ -2746,7 +3277,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 405,
             "source_fragment" : "sketch1.write(meta.index_sketch1, meta.value_sketch1)"
           }
@@ -2769,7 +3300,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 227,
+            "line" : 181,
             "column" : 459,
             "source_fragment" : "window1.write(meta.index_sketch1, meta.window_sketch1)"
           }
@@ -2796,7 +3327,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 8,
             "source_fragment" : "hash(meta.index_sketch2, HashAlgorithm.crc32, (bit<32>)0, {meta.flowId, 64w0xCCCCCCCCCCCCCCCC}, (bit<32>)8160)"
           }
@@ -2819,7 +3350,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 120,
             "source_fragment" : "sketch2.read(meta.value_sketch2, meta.index_sketch2)"
           }
@@ -2842,7 +3373,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 173,
             "source_fragment" : "window2.read(meta.window_sketch2, meta.index_sketch2)"
           }
@@ -2914,7 +3445,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 228,
             "source_fragment" : "meta.value_sketch2 = (meta.value_sketch2 >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch2)"
           }
@@ -2956,7 +3487,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 321,
             "source_fragment" : "meta.value_sketch2 = meta.value_sketch2 + 1"
           }
@@ -2975,7 +3506,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 365,
             "source_fragment" : "meta.window_sketch2 = meta.mAbsWindowId"
           }
@@ -2998,7 +3529,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 405,
             "source_fragment" : "sketch2.write(meta.index_sketch2, meta.value_sketch2)"
           }
@@ -3021,7 +3552,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 228,
+            "line" : 182,
             "column" : 459,
             "source_fragment" : "window2.write(meta.index_sketch2, meta.window_sketch2)"
           }
@@ -3030,7 +3561,7 @@
     },
     {
       "name" : "MyEgress.set_invalid_ctrl_hdr",
-      "id" : 9,
+      "id" : 10,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -3043,7 +3574,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 232,
+            "line" : 186,
             "column" : 8,
             "source_fragment" : "hdr.ctrl.setInvalid()"
           }
@@ -3051,8 +3582,8 @@
       ]
     },
     {
-      "name" : "access255",
-      "id" : 10,
+      "name" : "access210",
+      "id" : 11,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -3069,7 +3600,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 255,
+            "line" : 210,
             "column" : 12,
             "source_fragment" : "meta.routerIp = 32w0x01010101"
           }
@@ -3107,7 +3638,7 @@
           ],
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 255,
+            "line" : 210,
             "column" : 28,
             "source_fragment" : "32w0x01010101; ..."
           }
@@ -3115,8 +3646,8 @@
       ]
     },
     {
-      "name" : "access262",
-      "id" : 11,
+      "name" : "access217",
+      "id" : 12,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -3147,7 +3678,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 83,
+        "line" : 60,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
@@ -3158,7 +3689,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 152,
+            "line" : 106,
             "column" : 10,
             "source_fragment" : "get_window_id"
           },
@@ -5173,7 +5704,7 @@
             {
               "source_info" : {
                 "filename" : "access.p4",
-                "line" : 160,
+                "line" : 114,
                 "column" : 0,
                 "source_fragment" : "48w0x3b023380 .. 48w0x3b9ac9ff : get_absolute_window_id(32w0)"
               },
@@ -5197,7 +5728,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 166,
+            "line" : 120,
             "column" : 10,
             "source_fragment" : "ipv4_forward"
           },
@@ -5231,7 +5762,7 @@
             {
               "source_info" : {
                 "filename" : "access.p4",
-                "line" : 176,
+                "line" : 130,
                 "column" : 12,
                 "source_fragment" : "32w0xc0a80101: forward(9w1)"
               },
@@ -5250,7 +5781,7 @@
             {
               "source_info" : {
                 "filename" : "access.p4",
-                "line" : 177,
+                "line" : 131,
                 "column" : 12,
                 "source_fragment" : "32w0xc0a80102: forward(9w2)"
               },
@@ -5273,7 +5804,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 186,
+            "line" : 140,
             "column" : 12,
             "source_fragment" : "NoAction()"
           },
@@ -5302,7 +5833,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 190,
+            "line" : 144,
             "column" : 12,
             "source_fragment" : "mark_attack_traffic()"
           },
@@ -5327,11 +5858,11 @@
           }
         },
         {
-          "name" : "tbl_access192",
+          "name" : "tbl_access146",
           "id" : 4,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 192,
+            "line" : 146,
             "column" : 46,
             "source_fragment" : "="
           },
@@ -5343,10 +5874,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [6],
-          "actions" : ["access192"],
+          "actions" : ["access146"],
           "base_default_next" : null,
           "next_tables" : {
-            "access192" : null
+            "access146" : null
           },
           "default_entry" : {
             "action_id" : 6,
@@ -5360,7 +5891,7 @@
           "id" : 5,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 195,
+            "line" : 149,
             "column" : 12,
             "source_fragment" : "drop()"
           },
@@ -5392,7 +5923,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 185,
+            "line" : 139,
             "column" : 11,
             "source_fragment" : "hdr.ipv4.isValid() && !hdr.ctrl.isValid()"
           },
@@ -5439,7 +5970,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 187,
+            "line" : 141,
             "column" : 18,
             "source_fragment" : "hdr.ctrl.isValid() && hdr.ctrl.flag == ControlMessageType.NOTIFICATION"
           },
@@ -5482,7 +6013,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 191,
+            "line" : 145,
             "column" : 15,
             "source_fragment" : "meta.blDetected == TrafficType.ATTACK"
           },
@@ -5501,7 +6032,7 @@
             }
           },
           "false_next" : null,
-          "true_next" : "tbl_access192"
+          "true_next" : "tbl_access146"
         }
       ]
     },
@@ -5510,18 +6041,47 @@
       "id" : 1,
       "source_info" : {
         "filename" : "access.p4",
-        "line" : 204,
+        "line" : 158,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
-      "init_table" : "MyEgress.count_requests",
+      "init_table" : "tbl_extract_flow_id",
       "tables" : [
         {
-          "name" : "MyEgress.count_requests",
+          "name" : "tbl_extract_flow_id",
           "id" : 6,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 235,
+            "line" : 205,
+            "column" : 8,
+            "source_fragment" : "extract_flow_id()"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [8],
+          "actions" : ["MyEgress.extract_flow_id"],
+          "base_default_next" : "MyEgress.count_requests",
+          "next_tables" : {
+            "MyEgress.extract_flow_id" : "MyEgress.count_requests"
+          },
+          "default_entry" : {
+            "action_id" : 8,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "MyEgress.count_requests",
+          "id" : 7,
+          "source_info" : {
+            "filename" : "access.p4",
+            "line" : 189,
             "column" : 10,
             "source_fragment" : "count_requests"
           },
@@ -5545,12 +6105,12 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [8, 7],
+          "action_ids" : [9, 7],
           "actions" : ["MyEgress.sketch_count_access", "NoAction"],
-          "base_default_next" : "node_14",
+          "base_default_next" : "node_15",
           "next_tables" : {
-            "MyEgress.sketch_count_access" : "node_14",
-            "NoAction" : "node_14"
+            "MyEgress.sketch_count_access" : "node_15",
+            "NoAction" : "node_15"
           },
           "default_entry" : {
             "action_id" : 7,
@@ -5562,7 +6122,7 @@
             {
               "source_info" : {
                 "filename" : "access.p4",
-                "line" : 245,
+                "line" : 199,
                 "column" : 12,
                 "source_fragment" : "(0, 53) : sketch_count_access()"
               },
@@ -5577,7 +6137,7 @@
                 }
               ],
               "action_entry" : {
-                "action_id" : 8,
+                "action_id" : 9,
                 "action_data" : []
               },
               "priority" : 1
@@ -5585,11 +6145,11 @@
           ]
         },
         {
-          "name" : "tbl_access255",
-          "id" : 7,
+          "name" : "tbl_access210",
+          "id" : 8,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 255,
+            "line" : 210,
             "column" : 26,
             "source_fragment" : "= 32w0x01010101; ..."
           },
@@ -5600,14 +6160,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [10],
-          "actions" : ["access255"],
+          "action_ids" : [11],
+          "actions" : ["access210"],
           "base_default_next" : null,
           "next_tables" : {
-            "access255" : null
+            "access210" : null
           },
           "default_entry" : {
-            "action_id" : 10,
+            "action_id" : 11,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -5615,10 +6175,10 @@
         },
         {
           "name" : "tbl_set_invalid_ctrl_hdr",
-          "id" : 8,
+          "id" : 9,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 260,
+            "line" : 215,
             "column" : 12,
             "source_fragment" : "set_invalid_ctrl_hdr()"
           },
@@ -5629,25 +6189,25 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [9],
+          "action_ids" : [10],
           "actions" : ["MyEgress.set_invalid_ctrl_hdr"],
-          "base_default_next" : "tbl_access262",
+          "base_default_next" : "tbl_access217",
           "next_tables" : {
-            "MyEgress.set_invalid_ctrl_hdr" : "tbl_access262"
+            "MyEgress.set_invalid_ctrl_hdr" : "tbl_access217"
           },
           "default_entry" : {
-            "action_id" : 9,
+            "action_id" : 10,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
           }
         },
         {
-          "name" : "tbl_access262",
-          "id" : 9,
+          "name" : "tbl_access217",
+          "id" : 10,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 262,
+            "line" : 217,
             "column" : 35,
             "source_fragment" : "="
           },
@@ -5658,14 +6218,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [11],
-          "actions" : ["access262"],
+          "action_ids" : [12],
+          "actions" : ["access217"],
           "base_default_next" : null,
           "next_tables" : {
-            "access262" : null
+            "access217" : null
           },
           "default_entry" : {
-            "action_id" : 11,
+            "action_id" : 12,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -5675,11 +6235,11 @@
       "action_profiles" : [],
       "conditionals" : [
         {
-          "name" : "node_14",
+          "name" : "node_15",
           "id" : 3,
           "source_info" : {
             "filename" : "access.p4",
-            "line" : 252,
+            "line" : 207,
             "column" : 11,
             "source_fragment" : "meta.blDetected == TrafficType.ATTACK"
           },
@@ -5697,7 +6257,7 @@
               }
             }
           },
-          "true_next" : "tbl_access255",
+          "true_next" : "tbl_access210",
           "false_next" : "tbl_set_invalid_ctrl_hdr"
         }
       ]
