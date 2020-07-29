@@ -66,10 +66,18 @@ header udp_t {
     bit<16> checksum;
 }
 
+// header ctrl_t {
+//     bit<8>              routerId;
+//     ControlMessageType  flag;   // 1 means notification, 0 means control
+//     bit<32>             counterValue;
+// }
+
+// Control Header
 header ctrl_t {
-    bit<8>              routerId;
-    ControlMessageType  flag;   // 1 means notification, 0 means control
-    bit<32>             counterValue;
+    bit<32>             source_rtr_id;
+    bit<16>             flag;
+    bit<32>             counter_val;
+    bit<32>             tstamp_val;
 }
 
 struct metadata {
@@ -110,7 +118,6 @@ struct metadata {
     bit<32>     window_sketch1;
     bit<32>     window_sketch2;
 
-
     // BL
     bit<1>      addedToBl;
     bit<32>     index_bl0;
@@ -125,6 +132,14 @@ struct metadata {
 
     bit<104>    flowId;
     bit<32>     mAbsWindowId;
+
+    // new
+    bit<32>     current_tstamp;
+    bit<1>      is_response;
+    bit<1>      is_ctrl;
+    bit<1>      is_request;
+    bit<1>      is_suspicious;
+    bit<1>      is_attack;
 }
 
 struct headers {
