@@ -121,7 +121,7 @@ control MyIngress(inout headers hdr,
         diff2 = hdr.ipv4.srcAddr - meta.value_bl2;
         diff3 = hdr.ipv4.srcAddr - meta.value_bl3;
         
-        if(diff0 == 0 || diff1 == 0 || diff2 == 0 || diff3 == 0){
+        if(diff0 == 0 || diff1 == 0 || diff2 == 0 || diff3 == 0) {
             meta.is_bl = 0;
         } else{
             meta.is_bl = 1;
@@ -145,6 +145,7 @@ control MyIngress(inout headers hdr,
 
     action markSuspicious() {
         hdr.ctrl.setValid();
+        hdr.ethernet.etherType = TYPE_CTRL;
         hdr.ctrl.flag = 0xFFFF; // send this to access
         hdr.ctrl.counter_val = meta.sketch_min;
         hdr.ctrl.tstamp_val = meta.current_tstamp;
@@ -172,8 +173,8 @@ control MyIngress(inout headers hdr,
         }
         default_action = NoAction;
         const entries = {
-            (0, 53, _) : markResponses();
             (_, _, 0xAAAA) : markCtrl();
+            (0, 53, _) : markResponses();
         }
     }
 
@@ -216,16 +217,19 @@ control MyIngress(inout headers hdr,
         }
         default_action = NoAction();
         const entries = {
-            (1, 53) : drop();
+            (0, 53) : drop();
         }
     }
 
     apply {
-        meta.current_tstamp = (bit<32>)standard_metadata.ingress_global_timestamp[47:32];
+        meta.current_tstamp = (bit<32>)standard_metadata.ingress_global_timestamp[47:22];
         ipv4_forward.apply();
         mark_packet.apply();
 
         meta.is_suspicious = 0;
+
+        verify_traffic_source();
+        filter_traffic.apply();
 
         if(meta.is_response == 1 || meta.is_ctrl == 1 ){
             if(meta.is_response == 1) {
@@ -284,10 +288,7 @@ control MyIngress(inout headers hdr,
                 increment_black_list_count();
                 drop();            
             }    
-        } else {
-            verify_traffic_source();
-            filter_traffic.apply();
-        }
+        } 
     }
 }
 

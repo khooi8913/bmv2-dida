@@ -128,10 +128,15 @@ control MyIngress(inout headers hdr,
         hdr.ctrl.counter_val = 0;
         hdr.ctrl.tstamp_val = 0;
         standard_metadata.egress_spec = standard_metadata.ingress_port;
+        bit<48> temp;
+        temp = hdr.ethernet.dstAddr;
+        hdr.ethernet.dstAddr = hdr.ethernet.srcAddr;
+        hdr.ethernet.srcAddr = temp;
     }
 
     action unMarkAttack() {
         hdr.ctrl.setInvalid();
+        hdr.ethernet.etherType = TYPE_IPV4;
     }
 
     table ipv4_forward {
@@ -199,7 +204,7 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
-        meta.current_tstamp = (bit<32>)standard_metadata.ingress_global_timestamp[47:32];
+        meta.current_tstamp = (bit<32>)standard_metadata.ingress_global_timestamp[47:22];
         ipv4_forward.apply();
         mark_packet.apply();
 
