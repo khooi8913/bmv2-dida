@@ -15,16 +15,18 @@
 #define SKETCH_COUNT(num, ip, seed) SKETCH_INDEX(num, ip, seed); \
 sketch##num.read(meta.value_sketch##num, meta.index_sketch##num);\
 window##num.read(meta.window_sketch##num, meta.index_sketch##num); \
-meta.value_sketch##num = (meta.value_sketch##num >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch##num));\
-meta.value_sketch##num = meta.value_sketch##num + 1;\
-meta.window_sketch##num = meta.mAbsWindowId;\
+meta.value_sketch##num = (meta.window_sketch##num == meta.current_tstamp) ? meta.value_sketch##num + 1 : 1;\
+meta.window_sketch##num = meta.current_tstamp;\
 sketch##num.write(meta.index_sketch##num, meta.value_sketch##num);\
 window##num.write(meta.index_sketch##num, meta.window_sketch##num);
 #define SKETCH_MIN(num, ip, seed) hash(meta.index_sketch##num, HashAlgorithm.crc32, (bit<32>)0, {ip, seed}, (bit<32>)SKETCH_ROW_LENGTH);\
- sketch##num.read(meta.value_sketch##num, meta.index_sketch##num); \
- window##num.read(meta.window_sketch##num, meta.index_sketch##num); \
- meta.value_sketch##num = (meta.value_sketch##num >> (bit<8>)(meta.mAbsWindowId-meta.window_sketch##num));\
- meta.sketch_min = meta.value_sketch##num < meta.sketch_min ? meta.value_sketch##num : meta.sketch_min
+sketch##num.read(meta.value_sketch##num, meta.index_sketch##num); \
+window##num.read(meta.window_sketch##num, meta.index_sketch##num); \
+meta.value_sketch##num = (meta.window_sketch##num == meta.current_tstamp) ? meta.value_sketch##num : 0;\
+meta.window_sketch##num = meta.current_tstamp;\
+meta.sketch_min = meta.value_sketch##num < meta.sketch_min ? meta.value_sketch##num : meta.sketch_min;\
+sketch##num.write(meta.index_sketch##num, meta.value_sketch##num);\
+window##num.write(meta.index_sketch##num, meta.window_sketch##num);
 
 /* Initialize SkAge */
 SKETCH_INIT(0);
@@ -52,12 +54,6 @@ BL_INIT(3);
 register <bit<32>>(1)   SUSPICIOUS_THRESHOLD;
 register <bit<32>>(1)   BLCOUNT;
 
-/* Wrap around */
-const bit<32> WINDOWS_PER_PHASE = 10; // # of entries in the TCAM
-register <bit<32>> (1) GLOBAL_WINDOW_ID;
-register <bit<32>> (1) WRAP_AROUND_CONSTANT;
-
-
 /*************************************************************************
 ************   C H E C K S U M    V E R I F I C A T I O N   *************
 *************************************************************************/
@@ -74,173 +70,13 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    action get_absolute_window_id(bit<32> absWinId){
-        bit<32> wrapAroundConstant;
-        WRAP_AROUND_CONSTANT.read(wrapAroundConstant, 0);
-
-        bit<32> globalWinId;
-        GLOBAL_WINDOW_ID.read(globalWinId, 0);
-
-        bit <32> tempWinId;
-        tempWinId = absWinId + wrapAroundConstant;
-
-        if (tempWinId < globalWinId) {
-            wrapAroundConstant = wrapAroundConstant + WINDOWS_PER_PHASE;
-        }
-
-        tempWinId = absWinId + wrapAroundConstant;
-
-        globalWinId = tempWinId;
-        meta.mAbsWindowId = globalWinId;
-        GLOBAL_WINDOW_ID.write(0, globalWinId);
-        WRAP_AROUND_CONSTANT.write(0, wrapAroundConstant);
-    }
-
     action drop() {
         mark_to_drop(standard_metadata);
-    }
-
-    action increment_black_list_count() {
-        bit<32> tmpBlackListCount;
-        BLCOUNT.read(tmpBlackListCount, 0);
-        if (meta.addedToBl == 1) {
-            tmpBlackListCount = tmpBlackListCount + 1;
-        }
-        BLCOUNT.write(0, tmpBlackListCount);
-    }
-
-    action verify_traffic_source () {
-        meta.blDiff = 1; // Init
-
-        BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
-        BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
-        BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
-        BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
-
-        bit<32> diff0;
-        bit<32> diff1;
-        bit<32> diff2;
-        bit<32> diff3;
-        diff0 = hdr.ipv4.srcAddr - meta.value_bl0;
-        diff1 = hdr.ipv4.srcAddr - meta.value_bl1;
-        diff2 = hdr.ipv4.srcAddr - meta.value_bl2;
-        diff3 = hdr.ipv4.srcAddr - meta.value_bl3;
-        
-        if(diff0 == 0 || diff1 == 0 || diff2 == 0 || diff3 == 0){
-            meta.blDiff = 0;
-        } else{
-            meta.blDiff = 1;
-        }
     }
 
     action forward(egressSpec_t port) {
         standard_metadata.egress_spec = port;
     }
-
-    table get_window_id {
-        key = {     
-            standard_metadata.ingress_global_timestamp : range;
-        }
-        actions = {
-            get_absolute_window_id;
-            NoAction;
-        }
-        const entries = {
-            #include "../include/window_id.p4"
-        }
-        default_action = NoAction();
-    }
-
-    table ipv4_forward {
-        key = {
-            hdr.ipv4.dstAddr : exact;
-        }
-        actions = {
-            forward;
-        }
-        default_action = forward(9w2);
-
-        const entries = {
-            32w0xc0a80101: forward(9w1);
-            32w0xc0a80102: forward(9w1);
-        }
-    }
-
-    apply {
-        get_window_id.apply();
-        ipv4_forward.apply();
-
-        if(hdr.ipv4.isValid() && !hdr.ctrl.isValid()) {
-            if(standard_metadata.ingress_port == 9w2){
-                // Border needs to check whether the traffic is allowed or not
-                verify_traffic_source();
-                if(meta.blDiff == 0) {  // If source IP is in the black list
-                    drop();
-                }
-            }
-        } else if (hdr.ctrl.isValid() && hdr.ctrl.flag == ControlMessageType.CONTROL){
-            // Control header, and make sure that the flag is set as a control
-            // Add to black list
-            bit<32> ipToWrite;
-
-            BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
-            BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
-            BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
-            BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
-
-            ipToWrite = 0;
-            if(meta.value_bl0 == 0 && meta.addedToBl == 0) {
-                ipToWrite = hdr.ipv4.srcAddr;
-                meta.addedToBl = 1;
-            } else {
-                ipToWrite = meta.value_bl0;
-            }
-            bl0.write(meta.index_bl0, ipToWrite);
-
-            ipToWrite = 0;
-            if(meta.value_bl1 == 0 && meta.addedToBl == 0) {
-                ipToWrite = hdr.ipv4.srcAddr;
-                meta.addedToBl = 1;
-            } else {
-                ipToWrite = meta.value_bl1;
-            }
-            bl1.write(meta.index_bl1, ipToWrite);
-
-            ipToWrite = 0;
-            if(meta.value_bl2 == 0 && meta.addedToBl == 0) {
-                ipToWrite = hdr.ipv4.srcAddr;
-                meta.addedToBl = 1;
-            } else {
-                ipToWrite = meta.value_bl2;
-            }
-            bl2.write(meta.index_bl2, ipToWrite);
-
-            ipToWrite = 0;
-            if(meta.value_bl3 == 0 && meta.addedToBl == 0) {
-                ipToWrite = hdr.ipv4.srcAddr;
-                meta.addedToBl = 1;
-            } else {
-                ipToWrite = meta.value_bl3;
-            }
-            bl3.write(meta.index_bl3, ipToWrite);
-
-            // Increment black list count                
-            increment_black_list_count();
-            // drop by the PRE
-            drop();
-        } else {
-            drop();
-        }
-    }
-}
-
-/*************************************************************************
-****************  E G R E S S   P R O C E S S I N G   *******************
-*************************************************************************/
-
-control MyEgress(inout headers hdr,
-                 inout metadata meta,
-                 inout standard_metadata_t standard_metadata) {
 
     action extract_flow_id () {
         meta.flowId[103:72] = hdr.ipv4.dstAddr;
@@ -259,7 +95,40 @@ control MyEgress(inout headers hdr,
         }
     }
 
-    action mark_suspicious_traffic () {
+    action increment_black_list_count() {
+        bit<32> tmpBlackListCount;
+        BLCOUNT.read(tmpBlackListCount, 0);
+        if (meta.addedToBl == 1) {
+            tmpBlackListCount = tmpBlackListCount + 1;
+        }
+        BLCOUNT.write(0, tmpBlackListCount);
+    }
+
+    action verify_traffic_source () {
+        meta.is_bl = 1; // Init
+
+        BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
+        BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
+        BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
+        BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
+
+        bit<32> diff0;
+        bit<32> diff1;
+        bit<32> diff2;
+        bit<32> diff3;
+        diff0 = hdr.ipv4.srcAddr - meta.value_bl0;
+        diff1 = hdr.ipv4.srcAddr - meta.value_bl1;
+        diff2 = hdr.ipv4.srcAddr - meta.value_bl2;
+        diff3 = hdr.ipv4.srcAddr - meta.value_bl3;
+        
+        if(diff0 == 0 || diff1 == 0 || diff2 == 0 || diff3 == 0){
+            meta.is_bl = 0;
+        } else{
+            meta.is_bl = 1;
+        }
+    }
+
+    action check_if_suspicious () {
         SUSPICIOUS_THRESHOLD.read(meta.suspicious_threshold, 0);
 
         meta.sketch_min = 1<<31;
@@ -268,50 +137,168 @@ control MyEgress(inout headers hdr,
         SKETCH_MIN(2, meta.flowId, 64w0xCCCCCCCCCCCCCCCC);
 
         if(meta.sketch_min > meta.suspicious_threshold) {
-            meta.suspicious = 1;
+            meta.is_suspicious = 1;
         } else {
-            meta.suspicious = 0;
+            meta.is_suspicious = 0;
         }
     }
 
-    action sketch_count_border() {
-        SKETCH_COUNT(0, meta.flowId, 64w0xAAAAAAAAAAAAAAAA);
-        SKETCH_COUNT(1, meta.flowId, 64w0xBBBBBBBBBBBBBBBB);
-        SKETCH_COUNT(2, meta.flowId, 64w0xCCCCCCCCCCCCCCCC);
-        mark_suspicious_traffic();
-    }
-
-    action encapsulate_ctrl_hdr() {
+    action markSuspicious() {
         hdr.ctrl.setValid();
-        // hdr.ctrl.routerId = meta.routerId;
-        hdr.ctrl.routerId = 8w0x1;
-        hdr.ctrl.counterValue = meta.sketch_min;
-        hdr.ctrl.flag = ControlMessageType.NOTIFICATION;
-        hdr.ethernet.etherType = TYPE_CTRL;
+        hdr.ctrl.flag = 0xFFFF; // send this to access
+        hdr.ctrl.counter_val = meta.sketch_min;
+        hdr.ctrl.tstamp_val = meta.current_tstamp;
+        hdr.ctrl.source_rtr_id = 32w0xc0a80101; // router id is hard coded for now
     }
 
-    table count_responses {
+    action markResponses(){
+        meta.is_response = 1;
+    }
+
+    action markCtrl() {
+        meta.is_ctrl = 1;
+    }
+
+    table mark_packet {
         key = {
-            hdr.ipv4.fragOffset : exact;
-            hdr.udp.srcPort : exact;
+            hdr.ipv4.fragOffset : ternary;
+            hdr.udp.srcPort : ternary;
+            hdr.ctrl.flag : ternary;
         }
         actions = {
-            sketch_count_border;
+            NoAction;
+            markResponses;
+            markCtrl;
+        }
+        default_action = NoAction;
+        const entries = {
+            (0, 53, _) : markResponses();
+            (_, _, 0xAAAA) : markCtrl();
+        }
+    }
+
+    table ipv4_forward {
+        key = {
+            hdr.ipv4.dstAddr : exact;
+        }
+        actions = {
+            forward;
+        }
+        default_action = forward(9w2);
+
+        const entries = {
+            32w0xc0a80101: forward(9w1);
+            32w0xc0a80102: forward(9w1);
+        }
+    }
+
+    table mark_suspicious {
+        key = {
+            meta.is_suspicious : exact;
+        }
+        actions = {
+            markSuspicious;
             NoAction;
         }
         const entries = {
-            (0, 53) : sketch_count_border();
+            1 : markSuspicious();
         }
-        default_action = NoAction;
+    }
+
+    table filter_traffic {
+        key = {
+            meta.is_bl : exact;
+            hdr.udp.srcPort : exact;
+        }
+        actions = {
+            drop;
+            NoAction;
+        }
+        default_action = NoAction();
+        const entries = {
+            (1, 53) : drop();
+        }
     }
 
     apply {
-        extract_flow_id();
-        count_responses.apply();
-        if(meta.suspicious == 1) {
-            encapsulate_ctrl_hdr();
+        meta.current_tstamp = (bit<32>)standard_metadata.ingress_global_timestamp[47:32];
+        ipv4_forward.apply();
+        mark_packet.apply();
+
+        meta.is_suspicious = 0;
+
+        if(meta.is_response == 1 || meta.is_ctrl == 1 ){
+            if(meta.is_response == 1) {
+                extract_flow_id();
+                SKETCH_COUNT(0, meta.flowId, 64w0xAAAAAAAAAAAAAAAA);
+                SKETCH_COUNT(1, meta.flowId, 64w0xBBBBBBBBBBBBBBBB);
+                SKETCH_COUNT(2, meta.flowId, 64w0xCCCCCCCCCCCCCCCC);
+                check_if_suspicious();
+                mark_suspicious.apply();
+            } else if(meta.is_ctrl == 1) {
+                // append to bl
+                bit<32> ipToWrite;
+
+                BL_READ(0, hdr.ipv4.srcAddr, 32w0xAAAAAAAA);
+                BL_READ(1, hdr.ipv4.srcAddr, 32w0xBBBBBBBB);
+                BL_READ(2, hdr.ipv4.srcAddr, 32w0xCCCCCCCC);
+                BL_READ(3, hdr.ipv4.srcAddr, 32w0xDDDDDDDD);
+
+                ipToWrite = 0;
+                if(meta.value_bl0 == 0 && meta.addedToBl == 0) {
+                    ipToWrite = hdr.ipv4.srcAddr;
+                    meta.addedToBl = 1;
+                } else {
+                    ipToWrite = meta.value_bl0;
+                }
+                bl0.write(meta.index_bl0, ipToWrite);
+
+                ipToWrite = 0;
+                if(meta.value_bl1 == 0 && meta.addedToBl == 0) {
+                    ipToWrite = hdr.ipv4.srcAddr;
+                    meta.addedToBl = 1;
+                } else {
+                    ipToWrite = meta.value_bl1;
+                }
+                bl1.write(meta.index_bl1, ipToWrite);
+
+                ipToWrite = 0;
+                if(meta.value_bl2 == 0 && meta.addedToBl == 0) {
+                    ipToWrite = hdr.ipv4.srcAddr;
+                    meta.addedToBl = 1;
+                } else {
+                    ipToWrite = meta.value_bl2;
+                }
+                bl2.write(meta.index_bl2, ipToWrite);
+
+                ipToWrite = 0;
+                if(meta.value_bl3 == 0 && meta.addedToBl == 0) {
+                    ipToWrite = hdr.ipv4.srcAddr;
+                    meta.addedToBl = 1;
+                } else {
+                    ipToWrite = meta.value_bl3;
+                }
+                bl3.write(meta.index_bl3, ipToWrite);
+
+                // Increment black list count                
+                increment_black_list_count();
+                drop();            
+            }    
+        } else {
+            verify_traffic_source();
+            filter_traffic.apply();
         }
     }
+}
+
+/*************************************************************************
+****************  E G R E S S   P R O C E S S I N G   *******************
+*************************************************************************/
+
+control MyEgress(inout headers hdr,
+                 inout metadata meta,
+                 inout standard_metadata_t standard_metadata) {
+    apply { }
 }
 
 /*************************************************************************

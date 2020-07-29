@@ -140,6 +140,7 @@ struct metadata {
     bit<1>      is_request;
     bit<1>      is_suspicious;
     bit<1>      is_attack;
+    bit<1>      is_bl;
 }
 
 struct headers {
